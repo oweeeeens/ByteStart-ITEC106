@@ -1,0 +1,206 @@
+/* Dyslexia-friendly font — must be FIRST (CSS spec: @import before other rules) */
+@import url('https://fonts.cdnfonts.com/css/opendyslexic');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .app-bg {
+    @apply bg-gradient-to-br from-blue-50 via-white to-pink-50 min-h-screen;
+  }
+  .heading {
+    @apply font-display tracking-tight;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  .skip-link {
+    @apply sr-only focus:not-sr-only fixed left-3 top-3 z-50 px-4 py-2 rounded-lg bg-brand-600 text-white;
+  }
+}
+
+@layer components {
+  .focus-outline {
+    @apply focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-gray-100;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 focus-outline shadow-sm hover:shadow-md;
+  }
+  .btn-primary {
+    @apply bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:from-brand-600 hover:to-brand-700;
+  }
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200;
+  }
+  .btn-danger {
+    @apply bg-gradient-to-r from-red-500 to-red-600 text-white hover:opacity-90;
+  }
+  .btn-success {
+    @apply bg-gradient-to-r from-green-500 to-green-600 text-white hover:opacity-90;
+  }
+  .progress-track {
+    @apply w-full bg-gray-200 rounded-full h-6 overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-6 bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 rounded-full text-white text-sm font-bold flex items-center justify-center transition-all duration-700;
+  }
+}
+
+/* ===== PAGE TRANSITION ===== */
+.page-transition {
+  animation: page-enter 0.35s ease-out;
+}
+@keyframes page-enter {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== FADE IN ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* ===== SLIDE UP ===== */
+@keyframes slide-up {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slide-up 0.35s ease-out;
+}
+
+/* ===== BOUNCE IN ===== */
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.1); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out;
+}
+
+/* ===== SHAKE ===== */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+  20%, 40%, 60%, 80% { transform: translateX(6px); }
+}
+.animate-shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+/* ===== CHECK POP ===== */
+@keyframes check-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.animate-check-pop {
+  animation: check-pop 0.4s ease-out;
+}
+
+/* ===== PULSE GLOW ===== */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 1s ease-in-out 2;
+}
+
+/* ===== CONFETTI ===== */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  top: -30px;
+  animation: confetti-fall linear forwards;
+  opacity: 0;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  50% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
+
+/* ===== FUN HOVER ===== */
+.fun-hover {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fun-hover:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.fun-hover:active {
+  transform: scale(0.98);
+}
+
+/* ===== REVEAL BUTTON ===== */
+.reveal-btn {
+  position: relative;
+  overflow: hidden;
+}
+.reveal-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+.reveal-btn:hover::after {
+  transform: translateX(100%);
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar-track {
+  background: linear-gradient(to right, #e2e8f0, #cbd5e1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+.progress-bar-fill {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4, #22c55e);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.progress-bar-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* ===== TOAST ===== */
+@keyframes toast-progress {
+  0% { width: 100%; }
+  100% { width: 0%; }
+}
+@keyframes slideUp {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
