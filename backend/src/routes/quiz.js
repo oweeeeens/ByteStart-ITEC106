@@ -17,6 +17,7 @@ router.get('/:lessonId', requireAuth, async (req, res) => {
       image_path: q.image_path,
       options: [q.option_a, q.option_b, q.option_c, q.option_d],
       correct_index: ['A', 'B', 'C', 'D'].indexOf(q.correct_answer),
+      paragraph_after: q.paragraph_after || 0,
     }))
     res.json({ questions, passing_score: quiz.passing_score || 70 })
   } catch {

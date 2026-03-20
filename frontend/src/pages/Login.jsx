@@ -41,7 +41,7 @@ export default function Login() {
       setLoading(true)
       const res = await api.login(u, p)
       localStorage.setItem('cb_token', res.token)
-      login(u)
+      login(res.user || { username: u, role: 'student' })
       navigate(from, { replace: true })
     } catch (err) {
       setError(err.message || 'Login failed')

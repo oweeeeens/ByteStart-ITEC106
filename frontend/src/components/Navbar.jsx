@@ -54,6 +54,11 @@ export default function Navbar() {
           <NavLink to="/accessibility" className={linkClass}>
             ♿ Accessibility
           </NavLink>
+          {user?.role === 'admin' && (
+            <NavLink to="/admin" className={linkClass}>
+              ⚙️ Admin
+            </NavLink>
+          )}
           {user ? (
             <div className="flex items-center gap-2 ml-2">
               {/* User greeting badge */}
@@ -100,6 +105,11 @@ export default function Navbar() {
             <NavLink to="/accessibility" className={linkClass} onClick={() => setOpen(false)}>
               ♿ Accessibility
             </NavLink>
+            {user?.role === 'admin' && (
+              <NavLink to="/admin" className={linkClass} onClick={() => setOpen(false)}>
+                ⚙️ Admin
+              </NavLink>
+            )}
             {user ? (
               <>
                 {/* Mobile user greeting */}

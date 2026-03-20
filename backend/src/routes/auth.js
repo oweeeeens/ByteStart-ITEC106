@@ -46,10 +46,10 @@ router.post('/register', async (req, res) => {
       [full_name, guardian_name, age || null, grade_level || null, username, hash, 'student'],
     )
     const userId = result.insertId
-    const token = jwt.sign({ id: userId, username }, process.env.JWT_SECRET || 'changeme', {
+    const token = jwt.sign({ id: userId, username, role: 'student' }, process.env.JWT_SECRET || 'changeme', {
       expiresIn: '7d',
     })
-    res.json({ token, user: { id: userId, full_name, guardian_name, username, age, grade_level } })
+    res.json({ token, user: { id: userId, full_name, guardian_name, username, age, grade_level, role: 'student' } })
   } catch (e) {
     const msg = e && e.code === 'ECONNREFUSED' ? 'Database unavailable' : 'Server error'
     const status = msg === 'Database unavailable' ? 503 : 500
@@ -67,7 +67,7 @@ router.post('/login', async (req, res) => {
     const user = rows[0]
     const ok = await bcrypt.compare(password, user.password_hash)
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
-    const token = jwt.sign({ id: user.id, username }, process.env.JWT_SECRET || 'changeme', {
+    const token = jwt.sign({ id: user.id, username, role: user.role }, process.env.JWT_SECRET || 'changeme', {
       expiresIn: '7d',
     })
     res.json({
@@ -78,6 +78,7 @@ router.post('/login', async (req, res) => {
         username: user.username,
         age: user.age,
         grade_level: user.grade_level,
+        role: user.role,
       },
     })
   } catch (e) {

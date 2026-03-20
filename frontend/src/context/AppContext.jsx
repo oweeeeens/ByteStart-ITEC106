@@ -151,8 +151,10 @@ export function AppProvider({ children }) {
     return () => window.removeEventListener('focus', handleFocus)
   }, [user, syncAllFromAPI])
 
-  function login(username, { isNewAccount = false } = {}) {
-    setUser({ username })
+  function login(userData, { isNewAccount = false } = {}) {
+    const username = typeof userData === 'string' ? userData : userData.username
+    const role = typeof userData === 'string' ? 'student' : (userData.role || 'student')
+    setUser({ username, role })
     if (isNewAccount) {
       localStorage.removeItem(storageKeyProgress(username))
       localStorage.removeItem(storageKeySettings(username))

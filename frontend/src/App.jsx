@@ -18,6 +18,12 @@ import ScrollToTop from './components/ScrollToTop.jsx'
 import BackToTop from './components/BackToTop.jsx'
 import KeyboardShortcuts from './components/KeyboardShortcuts.jsx'
 import { ToastProvider } from './components/Toast.jsx'
+import AdminLayout from './components/AdminLayout.jsx'
+import AdminDashboard from './pages/admin/AdminDashboard.jsx'
+import AdminUsers from './pages/admin/AdminUsers.jsx'
+import AdminCourses from './pages/admin/AdminCourses.jsx'
+import AdminLessons from './pages/admin/AdminLessons.jsx'
+import AdminQuizzes from './pages/admin/AdminQuizzes.jsx'
 
 function ProtectedRoute({ children }) {
   const { user } = useApp()
@@ -57,6 +63,7 @@ function AppShell() {
     }
   }, [settings.screenReader, location.pathname])
 
+  const isAdmin = location.pathname.startsWith('/admin')
   const fontClass = settings.fontSize === 'large' ? 'cb-font-large' : settings.fontSize === 'small' ? 'cb-font-small' : 'cb-font-medium'
   const contrastClass = settings.highContrast ? 'cb-contrast' : ''
   const darkClass = settings.darkMode ? 'cb-dark' : ''
@@ -70,24 +77,39 @@ function AppShell() {
   return (
     <div className={`${fontClass} ${contrastClass} ${darkClass} ${dyslexiaClass} ${motionClass} ${spacingClass} ${cursorClass} ${focusClass} ${srClass} app-bg font-sans`}>
       <a href="#main" className="skip-link">Skip to main content</a>
-      <Navbar />
+      {!isAdmin && <Navbar />}
       <ScrollToTop />
       <KeyboardShortcuts />
-      <main id="main" aria-label="Main content" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 page-transition">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/lessons" element={<Lessons />} />
-          <Route path="/lessons/:lessonId" element={<ProtectedRoute><LessonDetail /></ProtectedRoute>} />
-          <Route path="/quiz/:lessonId" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/accessibility" element={<Accessibility />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
+      {isAdmin ? (
+        <div id="main" aria-label="Admin content">
+          <Routes>
+            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="courses" element={<AdminCourses />} />
+              <Route path="lessons" element={<AdminLessons />} />
+              <Route path="quizzes" element={<AdminQuizzes />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      ) : (
+        <main id="main" aria-label="Main content" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 page-transition">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/lessons" element={<Lessons />} />
+            <Route path="/lessons/:lessonId" element={<ProtectedRoute><LessonDetail /></ProtectedRoute>} />
+            <Route path="/quiz/:lessonId" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      )}
       <ReadAloudToolbar />
       <BackToTop />
     </div>
@@ -112,3 +134,4 @@ export default function App() {
     </AppProvider>
   )
 }
+

@@ -62,4 +62,62 @@ export const api = {
   getHistory: () => request('/history'),
   recordHistory: (entry) =>
     request('/history', { method: 'POST', body: JSON.stringify(entry) }),
+
+  // ─── Admin ──────────────────────────────────────────────────
+  admin: {
+    getStats: () => request('/admin/stats'),
+    getUsers: () => request('/admin/users'),
+    updateUser: (id, data) =>
+      request(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    deleteUser: (id) =>
+      request(`/admin/users/${id}`, { method: 'DELETE' }),
+    getCourses: () => request('/admin/courses'),
+    createCourse: (data) =>
+      request('/admin/courses', { method: 'POST', body: JSON.stringify(data) }),
+    updateCourse: (id, data) =>
+      request(`/admin/courses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    deleteCourse: (id) =>
+      request(`/admin/courses/${id}`, { method: 'DELETE' }),
+    getLessons: () => request('/admin/lessons'),
+    createLesson: (data) =>
+      request('/admin/lessons', { method: 'POST', body: JSON.stringify(data) }),
+    updateLesson: (id, data) =>
+      request(`/admin/lessons/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    deleteLesson: (id) =>
+      request(`/admin/lessons/${id}`, { method: 'DELETE' }),
+    getQuestions: (lessonId) => request(`/admin/lessons/${lessonId}/questions`),
+    addQuestion: (lessonId, { question_text, options, correct_answer, image_path }) =>
+      request(`/admin/lessons/${lessonId}/questions`, {
+        method: 'POST',
+        body: JSON.stringify({
+          question_text,
+          option_a: options[0],
+          option_b: options[1],
+          option_c: options[2],
+          option_d: options[3],
+          correct_answer: ['A', 'B', 'C', 'D'][correct_answer],
+          image_path,
+        }),
+      }),
+    updateQuestion: (questionId, { question_text, options, correct_answer, image_path }) =>
+      request(`/admin/questions/${questionId}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          question_text,
+          option_a: options[0],
+          option_b: options[1],
+          option_c: options[2],
+          option_d: options[3],
+          correct_answer: ['A', 'B', 'C', 'D'][correct_answer],
+          image_path,
+        }),
+      }),
+    deleteQuestion: (questionId) =>
+      request(`/admin/questions/${questionId}`, { method: 'DELETE' }),
+    updatePassingScore: (lessonId, passing_score) =>
+      request(`/admin/lessons/${lessonId}/passing-score`, {
+        method: 'PUT',
+        body: JSON.stringify({ passing_score }),
+      }),
+  },
 }

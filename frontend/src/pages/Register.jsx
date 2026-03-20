@@ -141,7 +141,7 @@ export default function Register() {
       const payload = { ...form, age: form.age ? Number(form.age) : null }
       const res = await api.register(payload)
       localStorage.setItem('cb_token', res.token)
-      login(form.username, { isNewAccount: true })
+      login(res.user || { username: form.username, role: 'student' }, { isNewAccount: true })
       navigate('/')
     } catch (err) {
       const msg = err?.message || 'Registration failed'
@@ -356,7 +356,7 @@ export default function Register() {
                 type="button"
                 className="btn btn-secondary w-full"
                 onClick={() => {
-                  login(form.username || 'Guest')
+                  login({ username: form.username || 'Guest', role: 'student' })
                   localStorage.setItem('cb_token', 'local')
                   navigate('/')
                 }}

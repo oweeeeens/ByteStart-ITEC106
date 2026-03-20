@@ -52,8 +52,8 @@ export default function Modal({ open, title, children, onClose, onConfirm, confi
 
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" onClick={onClose} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-page-enter">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md" aria-hidden="true" onClick={onClose} />
       <div
         ref={dialogRef}
         role="dialog"
@@ -61,15 +61,47 @@ export default function Modal({ open, title, children, onClose, onConfirm, confi
         aria-labelledby={titleId}
         aria-describedby={descId}
         tabIndex={-1}
-        className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-gray-100 outline-none"
+        className={`relative w-full max-w-md p-8 outline-none transition-all duration-300 ${
+          confirmText === 'Delete' ? 'border-red-500/20' : ''
+        } ${
+          title.includes('Edit') || title.includes('Add') || title.includes('New') ? 'border-cyan-500/20' : ''
+        } ${
+          // If in admin deep space or glass mode requested
+          document.querySelector('.admin-deep-space') 
+            ? 'admin-glass-card border-white/10 text-white' 
+            : 'bg-white rounded-2xl shadow-xl border border-gray-100'
+        }`}
       >
-        <h2 id={titleId} className="text-xl font-bold heading text-brand-700">{title}</h2>
-        <div id={descId} className="mt-3 text-steel">{children}</div>
-        <div className="mt-6 flex justify-end gap-3">
-          <button className="btn btn-secondary" onClick={onClose}>{cancelText}</button>
-          <button className="btn btn-danger" onClick={onConfirm}>{confirmText}</button>
+        <h2 id={titleId} className={`text-2xl font-extrabold tracking-tight ${
+          document.querySelector('.admin-deep-space') ? 'text-white' : 'text-brand-700'
+        }`}>{title}</h2>
+        <div id={descId} className={`mt-4 ${
+          document.querySelector('.admin-deep-space') ? 'text-slate-300' : 'text-slate-600'
+        }`}>{children}</div>
+        <div className="mt-8 flex justify-end gap-3">
+          <button 
+            className={`px-5 py-2.5 rounded-xl font-bold transition-all ${
+              document.querySelector('.admin-deep-space') 
+                ? 'bg-white/5 hover:bg-white/10 text-slate-300' 
+                : 'bg-gray-100 hover:bg-gray-200 text-slate-700'
+            }`} 
+            onClick={onClose}
+          >
+            {cancelText}
+          </button>
+          <button 
+            className={`px-6 py-2.5 rounded-xl font-bold text-white transition-all shadow-lg ${
+              confirmText === 'Delete' 
+                ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20' 
+                : 'bg-gradient-to-r from-cyan-500 to-blue-600 shadow-cyan-500/20 hover:scale-105'
+            }`} 
+            onClick={onConfirm}
+          >
+            {confirmText}
+          </button>
         </div>
       </div>
     </div>
   )
 }
+

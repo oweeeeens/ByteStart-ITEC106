@@ -8,6 +8,7 @@ import quizRouter from './routes/quiz.js'
 import progressRouter from './routes/progress.js'
 import settingsRouter from './routes/settings.js'
 import historyRouter from './routes/history.js'
+import adminRouter from './routes/admin.js'
 
 const app = express()
 app.use(cors())
@@ -29,6 +30,7 @@ app.use('/api/quiz', quizRouter)
 app.use('/api/progress', progressRouter)
 app.use('/api/settings', settingsRouter)
 app.use('/api/history', historyRouter)
+app.use('/api/admin', adminRouter)
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {
