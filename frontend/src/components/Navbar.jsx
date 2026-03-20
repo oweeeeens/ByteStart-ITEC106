@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <nav id="main-nav" className="bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 text-white border-b border-brand-700/30 sticky top-0 z-50 shadow-lg" role="navigation" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/lessons" className="text-2xl font-extrabold heading text-white flex items-center gap-2 hover:scale-105 transition-transform">
+        <Link to="/" className="text-2xl font-extrabold heading text-white flex items-center gap-2 hover:scale-105 transition-transform">
           <span className="text-3xl">💻</span> CompuBasics
         </Link>
         <button
@@ -39,11 +39,20 @@ export default function Navbar() {
           {open ? '✕' : '☰'}
         </button>
         <div className="hidden md:flex items-center gap-1">
+          <NavLink to="/" className={linkClass}>
+            🏠 Home
+          </NavLink>
           <NavLink to="/lessons" className={linkClass}>
             📖 Lessons
           </NavLink>
           <NavLink to="/profile" className={linkClass}>
             👤 Profile
+          </NavLink>
+          <NavLink to="/help" className={linkClass}>
+            ❓ Help
+          </NavLink>
+          <NavLink to="/accessibility" className={linkClass}>
+            ♿ Accessibility
           </NavLink>
           {user ? (
             <div className="flex items-center gap-2 ml-2">
@@ -76,11 +85,20 @@ export default function Navbar() {
       {open && (
         <div id="mobile-nav-menu" role="menu" className="md:hidden px-4 pb-4 space-y-1 animate-fadeIn">
           <div className="flex flex-col gap-1">
+            <NavLink to="/" className={linkClass} onClick={() => setOpen(false)}>
+              🏠 Home
+            </NavLink>
             <NavLink to="/lessons" className={linkClass} onClick={() => setOpen(false)}>
               📖 Lessons
             </NavLink>
             <NavLink to="/profile" className={linkClass} onClick={() => setOpen(false)}>
               👤 Profile
+            </NavLink>
+            <NavLink to="/help" className={linkClass} onClick={() => setOpen(false)}>
+              ❓ Help
+            </NavLink>
+            <NavLink to="/accessibility" className={linkClass} onClick={() => setOpen(false)}>
+              ♿ Accessibility
             </NavLink>
             {user ? (
               <>

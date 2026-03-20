@@ -2,6 +2,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { AppProvider, useApp } from './context/AppContext.jsx'
 import Navbar from './components/Navbar.jsx'
+import Home from './pages/Home.jsx'
 import Lessons from './pages/Lessons.jsx'
 import LessonDetail from './pages/LessonDetail.jsx'
 import Login from './pages/Login.jsx'
@@ -9,6 +10,8 @@ import Register from './pages/Register.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import Profile from './pages/Profile.jsx'
 import Quiz from './pages/Quiz.jsx'
+import Help from './pages/Help.jsx'
+import Accessibility from './pages/Accessibility.jsx'
 import NotFound from './pages/NotFound.jsx'
 import ReadAloudToolbar from './components/ReadAloudToolbar.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
@@ -72,11 +75,13 @@ function AppShell() {
       <KeyboardShortcuts />
       <main id="main" aria-label="Main content" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 page-transition">
         <Routes>
-          <Route path="/" element={<Navigate to="/lessons" replace />} />
+          <Route path="/" element={<Home />} />
           <Route path="/lessons" element={<Lessons />} />
           <Route path="/lessons/:lessonId" element={<ProtectedRoute><LessonDetail /></ProtectedRoute>} />
           <Route path="/quiz/:lessonId" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/accessibility" element={<Accessibility />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

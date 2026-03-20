@@ -111,6 +111,9 @@ router.post('/forgot-password', async (req, res) => {
   if (new_password.length < 8) {
     return res.status(400).json({ error: 'Password must be at least 8 characters.' })
   }
+  if (BLOCKED_PASSWORDS.has(new_password.toLowerCase())) {
+    return res.status(400).json({ error: 'This password was found in data breaches. Please choose a stronger, unique password.' })
+  }
   if (!/[A-Z]/.test(new_password)) {
     return res.status(400).json({ error: 'Password must include at least one uppercase letter (A-Z).' })
   }
@@ -122,16 +125,31 @@ router.post('/forgot-password', async (req, res) => {
   }
   try {
     const pool = await req.poolPromise
+    // Step 1: Check if user exists
     const [rows] = await pool.query(
-      'SELECT id FROM users WHERE username=? AND guardian_name=?',
-      [username, guardian_name],
+      'SELECT id, guardian_name FROM users WHERE username=?',
+      [username]
     )
+
     if (!rows.length) {
-      return res.status(401).json({ error: 'Username and guardian name do not match.' })
+      return res.status(400).json({ error: 'Account not found with that information.' })
     }
+
+    const user = rows[0]
+
+    // Step 2: Verify guardian name (case-insensitive, whitespace-tolerant)
+    const dbGuardianName = user.guardian_name ? user.guardian_name.trim().toLowerCase() : ''
+    const providedGuardianName = guardian_name.trim().toLowerCase()
+
+    if (!dbGuardianName || dbGuardianName !== providedGuardianName) {
+      return res.status(400).json({ error: 'Guardian Name does not match our records.' })
+    }
+
+    // Update password
     const hash = await bcrypt.hash(new_password, 10)
-    await pool.query('UPDATE users SET password_hash=? WHERE id=?', [hash, rows[0].id])
-    res.json({ ok: true, message: 'Password updated successfully!' })
+    await pool.query('UPDATE users SET password_hash=? WHERE id=?', [hash, user.id])
+
+    res.json({ message: 'Password updated successfully. You can now log in.' })
   } catch (e) {
     const msg = e && e.code === 'ECONNREFUSED' ? 'Database unavailable' : 'Server error'
     const status = msg === 'Database unavailable' ? 503 : 500

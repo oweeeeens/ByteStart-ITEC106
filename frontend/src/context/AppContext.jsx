@@ -184,6 +184,9 @@ export function AppProvider({ children }) {
       if (hasToken()) saveSettingsToAPI(settings)
     }
     setUser(null)
+    setProgress(defaultProgress())
+    setSettings(initialSettings)
+    setQuizHistory([])
     localStorage.removeItem(USER_KEY)
     localStorage.removeItem('cb_token')
     initialSyncDone.current = false
