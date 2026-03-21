@@ -67,16 +67,37 @@ export default function LessonDetail() {
   const isReview = lesson ? progress[lesson.id] === 'completed' : false
 
   useEffect(() => {
-    // If there are NO questions, or ALL questions are answered, mark as completed
-    if (lessonComplete || !lesson || isReview) return
-    if (!qLoading) {
-      if (dbQuestions.length === 0) {
-        setLessonComplete(true)
-      } else if (Object.keys(funCheckRevealed).length >= dbQuestions.length) {
-        setLessonComplete(true)
-      }
+    // Don't re-evaluate if already reviewing
+    if (!lesson || isReview) return
+    
+    // If still loading questions, don't evaluate yet
+    if (qLoading) return
+
+    // If there are NO questions, mark as completed
+    if (dbQuestions.length === 0) {
+      setLessonComplete(true)
+      return
     }
-  }, [funCheckRevealed, lessonComplete, lesson, isReview, dbQuestions, qLoading])
+
+    // If there ARE questions, require ALL to be answered AND ALL to be correct
+    const answeredCount = Object.keys(funCheckRevealed).length
+    const allAnswered = answeredCount === dbQuestions.length
+
+    if (!allAnswered) {
+      // Not all questions answered yet
+      setLessonComplete(false)
+      return
+    }
+
+    // All answered, now verify ALL are correct
+    const allCorrect = dbQuestions.every((q) => {
+      const userAnswerIndex = funCheckAnswers[q.id]
+      const isAnswerCorrect = userAnswerIndex === q.correct_index
+      return isAnswerCorrect
+    })
+
+    setLessonComplete(allCorrect)
+  }, [funCheckRevealed, funCheckAnswers, lesson, isReview, dbQuestions, qLoading])
 
   useEffect(() => {
     if (!lessonComplete || isReview) return
@@ -325,8 +346,27 @@ export default function LessonDetail() {
             <h2 className="text-2xl font-extrabold text-brand-700 heading flex items-center gap-2">
               <span className="text-2xl">🧠</span> Knowledge Check
             </h2>
-            <div className="bg-white px-4 py-1.5 rounded-full border border-brand-200 text-sm font-bold text-brand-600">
-              Question {currentQuizIndex + 1} of {totalFunChecks}
+            <div className="flex items-center gap-3">
+              {(() => {
+                const correctCount = dbQuestions.filter((q) => funCheckAnswers[q.id] === q.correct_index).length
+                const answeredCount = Object.keys(funCheckRevealed).length
+                const allCorrect = correctCount === totalFunChecks && answeredCount === totalFunChecks
+                
+                return (
+                  <>
+                    <div className={`px-4 py-1.5 rounded-full border text-sm font-bold ${
+                      allCorrect
+                        ? 'bg-green-100 border-green-400 text-green-700'
+                        : 'bg-white border-brand-200 text-brand-600'
+                    }`}>
+                      {correctCount} / {totalFunChecks} Correct
+                    </div>
+                    <div className="bg-white px-4 py-1.5 rounded-full border border-brand-200 text-sm font-bold text-brand-600">
+                      Question {currentQuizIndex + 1} of {totalFunChecks}
+                    </div>
+                  </>
+                )
+              })()}
             </div>
           </div>
 
