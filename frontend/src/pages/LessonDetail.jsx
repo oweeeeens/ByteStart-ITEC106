@@ -40,15 +40,18 @@ export default function LessonDetail() {
   const [revealedSections, setRevealedSections] = useState({})
   const [funCheckAnswers, setFunCheckAnswers] = useState({})
   const [funCheckRevealed, setFunCheckRevealed] = useState({})
+  const [inlineFunCheckAnswers, setInlineFunCheckAnswers] = useState({}) // Track inline fun check answers
+  const [quizAnswers, setQuizAnswers] = useState({})
+  const [quizAnswered, setQuizAnswered] = useState({})
   const [showConfetti, setShowConfetti] = useState(false)
   const [lessonComplete, setLessonComplete] = useState(false)
-  
+  const [currentQuizIndex, setCurrentQuizIndex] = useState(0)
+
   const contentRef = useRef(null)
   const completionRef = useRef(null)
 
   const [dbQuestions, setDbQuestions] = useState([])
   const [qLoading, setQLoading] = useState(false)
-  const [currentQuizIndex, setCurrentQuizIndex] = useState(0)
 
   const dbLessonId = useMemo(() => {
     const num = parseInt(lessonId.replace('lesson', ''))
@@ -65,39 +68,33 @@ export default function LessonDetail() {
   }, [dbLessonId, lesson])
 
   const isReview = lesson ? progress[lesson.id] === 'completed' : false
+  const inlineFunChecks = lesson.funChecks || []
+  const totalFunChecks = dbQuestions.length
 
+  // Check if all inline fun checks are answered correctly
+  const allInlineFunChecksCorrect = inlineFunChecks.length === 0 || inlineFunChecks.every((check, idx) => {
+    const key = `inline-${idx}`
+    return inlineFunCheckAnswers[key] === check.answer
+  })
+
+  // Check if all quiz questions are answered correctly
+  const quizComplete = dbQuestions.length === 0 || dbQuestions.every((q) => {
+    const answered = quizAnswered[q.id]
+    const isCorrect = quizAnswers[q.id] === q.correct_index
+    return answered && isCorrect
+  })
+
+  // Only mark lesson as complete when BOTH inline checks and quiz are done
   useEffect(() => {
-    // Don't re-evaluate if already reviewing
     if (!lesson || isReview) return
-    
-    // If still loading questions, don't evaluate yet
     if (qLoading) return
 
-    // If there are NO questions, mark as completed
-    if (dbQuestions.length === 0) {
+    if (allInlineFunChecksCorrect && quizComplete) {
       setLessonComplete(true)
-      return
-    }
-
-    // If there ARE questions, require ALL to be answered AND ALL to be correct
-    const answeredCount = Object.keys(funCheckRevealed).length
-    const allAnswered = answeredCount === dbQuestions.length
-
-    if (!allAnswered) {
-      // Not all questions answered yet
+    } else {
       setLessonComplete(false)
-      return
     }
-
-    // All answered, now verify ALL are correct
-    const allCorrect = dbQuestions.every((q) => {
-      const userAnswerIndex = funCheckAnswers[q.id]
-      const isAnswerCorrect = userAnswerIndex === q.correct_index
-      return isAnswerCorrect
-    })
-
-    setLessonComplete(allCorrect)
-  }, [funCheckRevealed, funCheckAnswers, lesson, isReview, dbQuestions, qLoading])
+  }, [inlineFunCheckAnswers, quizAnswers, quizAnswered, lesson, isReview, qLoading, allInlineFunChecksCorrect, quizComplete])
 
   useEffect(() => {
     if (!lessonComplete || isReview) return
@@ -142,22 +139,93 @@ export default function LessonDetail() {
   }
 
   const totalSections = (lesson.content?.length || 0)
-  const totalFunChecks = dbQuestions.length
 
   function toggleReveal(idx) {
     setRevealedSections(prev => ({ ...prev, [idx]: !prev[idx] }))
   }
 
-  function answerFunCheck(checkId, optionIdx, isCorrect) {
-    if (funCheckRevealed[checkId]) return
-    setFunCheckAnswers(prev => ({ ...prev, [checkId]: optionIdx }))
-    setFunCheckRevealed(prev => ({ ...prev, [checkId]: true }))
-    
+  // Answer inline quick checks (these gate content)
+  function answerInlineFunCheck(checkIdx, optionIdx, isCorrect) {
+    const key = `inline-${checkIdx}`
+    if (inlineFunCheckAnswers[key] !== undefined) return // Already answered
+    setInlineFunCheckAnswers(prev => ({ ...prev, [key]: optionIdx }))
+
     if (isCorrect) {
-      showToast('🎉 Correct! Great job!', 'success')
+      showToast('🎉 Correct! You can now continue.', 'success')
+    } else {
+      showToast('❌ Not quite right. Try again!', 'error')
+      // Reset the answer so they can try again
+      setTimeout(() => {
+        setInlineFunCheckAnswers(prev => {
+          const newState = { ...prev }
+          delete newState[key]
+          return newState
+        })
+      }, 1500)
+    }
+  }
+
+  // Answer quiz questions (at the bottom)
+  function answerQuizQuestion(questionId, optionIdx, isCorrect) {
+    if (quizAnswered[questionId]) return
+    setQuizAnswers(prev => ({ ...prev, [questionId]: optionIdx }))
+    setQuizAnswered(prev => ({ ...prev, [questionId]: true }))
+
+    if (isCorrect) {
+      showToast('🎉 Correct!', 'success')
     } else {
       showToast('Not quite — review the explanation!', 'info')
     }
+  }
+
+  function renderInlineFunCheck(check, checkIdx) {
+    const key = `inline-${checkIdx}`
+    const answered = inlineFunCheckAnswers[key] !== undefined
+    const userAnswer = inlineFunCheckAnswers[key]
+    const isCorrect = userAnswer === check.answer
+    const checkAnswerIdx = check.answer
+
+    return (
+      <div key={key} className="my-8 animate-slide-up">
+        <Card className="p-6 border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 shadow-lg">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-3xl">❓</span>
+            <h3 className="text-xl font-extrabold text-amber-900">Quick Check - Answer to Continue</h3>
+          </div>
+          <p className="text-gray-800 text-lg font-semibold mb-4">{check.question}</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            {check.options.map((opt, oi) => {
+              let btnClass = 'bg-white border-2 border-amber-200 hover:border-amber-400 hover:bg-amber-50 text-gray-800'
+              if (answered) {
+                if (oi === checkAnswerIdx) btnClass = 'bg-green-100 text-green-700 border-2 border-green-500 shadow-md'
+                else if (oi === userAnswer && !isCorrect) btnClass = 'bg-red-100 text-red-700 border-2 border-red-500'
+                else btnClass = 'bg-gray-50 text-gray-400 border-2 border-gray-200 opacity-50'
+              }
+
+              return (
+                <button
+                  key={oi}
+                  onClick={() => answerInlineFunCheck(checkIdx, oi, oi === checkAnswerIdx)}
+                  disabled={answered}
+                  className={`text-left px-4 py-3 rounded-lg font-bold transition-all duration-300 ${btnClass}`}
+                >
+                  {opt}
+                </button>
+              )
+            })}
+          </div>
+
+          {answered && (
+            <div className={`p-4 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+              <p className={`font-semibold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                {isCorrect ? '✅ Correct!' : '❌ Try again:'} {check.explanation}
+              </p>
+            </div>
+          )}
+        </Card>
+      </div>
+    )
   }
 
   function renderSection(idx) {
@@ -287,13 +355,40 @@ export default function LessonDetail() {
         </Card>
       )}
 
-      {/* ─── Lesson Content ──────────────────────────────────────────── */}
+      {/* ─── Lesson Content with Gated Quick Checks ─────────────────────── */}
       {lesson.content && (
         <div className="mt-8">
           <h2 className="text-2xl font-extrabold text-brand-700 heading flex items-center gap-2 mb-6">
             <span className="text-2xl">📖</span> Lesson Content
           </h2>
-          {lesson.content.map((_, i) => renderSection(i))}
+          {lesson.content.map((_, i) => {
+            // Check if there's a quick check after this section
+            const quickCheckAfterThis = inlineFunChecks.find(check => check.after === i)
+            const quickCheckIndex = quickCheckAfterThis ? inlineFunChecks.indexOf(quickCheckAfterThis) : null
+            const quickCheckAnswered = quickCheckIndex !== null ? (inlineFunCheckAnswers[`inline-${quickCheckIndex}`] === quickCheckAfterThis.answer) : true
+
+            // Check if previous quick check is answered
+            const prevQuickCheckIdx = i > 0 ? inlineFunChecks.findIndex(check => check.after === i - 1) : -1
+            const prevQuickCheckAnswered = prevQuickCheckIdx === -1 ? true : (inlineFunCheckAnswers[`inline-${prevQuickCheckIdx}`] === inlineFunChecks[prevQuickCheckIdx].answer)
+
+            // Only show this section if all previous quick checks are answered
+            if (!prevQuickCheckAnswered) {
+              return null
+            }
+
+            return (
+              <div key={`section-${i}`}>
+                {renderSection(i)}
+                {quickCheckAfterThis && renderInlineFunCheck(quickCheckAfterThis, quickCheckIndex)}
+                {/* Gate next section if quick check exists and isn't answered */}
+                {quickCheckAfterThis && !quickCheckAnswered && (
+                  <div className="my-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg text-center">
+                    <p className="text-amber-900 font-bold">👆 Answer the question above to continue reading</p>
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
 
@@ -339,29 +434,28 @@ export default function LessonDetail() {
         </Card>
       )}
 
-      {/* ─── Quiz Carousel ────────────────────────────────────────────── */}
-      {!qLoading && totalFunChecks > 0 && (
-        <Card className="mt-12 p-6 border-2 border-brand-300 bg-gradient-to-br from-brand-50 to-indigo-50 shadow-lg">
+      {/* ─── Full Quiz at Bottom (Required to Complete Lesson) ───────────────── */}
+      {!qLoading && totalFunChecks > 0 && allInlineFunChecksCorrect && (
+        <Card className="mt-16 p-6 border-2 border-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-extrabold text-brand-700 heading flex items-center gap-2">
-              <span className="text-2xl">🧠</span> Knowledge Check
+            <h2 className="text-2xl font-extrabold text-blue-700 heading flex items-center gap-2">
+              <span className="text-2xl">📝</span> Final Quiz - Complete to Unlock Next Lesson
             </h2>
             <div className="flex items-center gap-3">
               {(() => {
-                const correctCount = dbQuestions.filter((q) => funCheckAnswers[q.id] === q.correct_index).length
-                const answeredCount = Object.keys(funCheckRevealed).length
-                const allCorrect = correctCount === totalFunChecks && answeredCount === totalFunChecks
-                
+                const correctCount = dbQuestions.filter((q) => quizAnswers[q.id] === q.correct_index).length
+                const answeredCount = Object.keys(quizAnswered).length
+
                 return (
                   <>
                     <div className={`px-4 py-1.5 rounded-full border text-sm font-bold ${
-                      allCorrect
+                      answeredCount === totalFunChecks
                         ? 'bg-green-100 border-green-400 text-green-700'
-                        : 'bg-white border-brand-200 text-brand-600'
+                        : 'bg-white border-blue-200 text-blue-600'
                     }`}>
                       {correctCount} / {totalFunChecks} Correct
                     </div>
-                    <div className="bg-white px-4 py-1.5 rounded-full border border-brand-200 text-sm font-bold text-brand-600">
+                    <div className="bg-white px-4 py-1.5 rounded-full border border-blue-200 text-sm font-bold text-blue-600">
                       Question {currentQuizIndex + 1} of {totalFunChecks}
                     </div>
                   </>
@@ -370,39 +464,38 @@ export default function LessonDetail() {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-brand-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-blue-100">
             {(() => {
               const currentQ = dbQuestions[currentQuizIndex]
-              const checkId = currentQ.id
-              const answered = funCheckRevealed[checkId]
-              const userAnswer = funCheckAnswers[checkId]
+              const answered = quizAnswered[currentQ.id]
+              const userAnswer = quizAnswers[currentQ.id]
               const isCorrect = userAnswer === currentQ.correct_index
 
               return (
-                <div key={checkId} className="animate-fade-in">
+                <div key={currentQ.id} className="animate-fade-in">
                   <p className="text-gray-800 text-xl font-bold mb-6 leading-relaxed">
                     {currentQ.question_text}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                     {currentQ.options.filter(o => o).map((opt, oi) => {
-                      let btnClass = 'bg-gray-50 border-2 border-gray-200 hover:border-brand-400 hover:bg-brand-50 text-gray-800'
+                      let btnClass = 'bg-gray-50 border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-gray-800'
                       if (answered) {
-                        if (oi === currentQ.correct_index) btnClass = 'bg-emerald-50 text-emerald-700 border-2 border-emerald-500 shadow-md transform scale-[1.02]'
+                        if (oi === currentQ.correct_index) btnClass = 'bg-green-50 text-green-700 border-2 border-green-500 shadow-md'
                         else if (oi === userAnswer) btnClass = 'bg-red-50 text-red-700 border-2 border-red-500'
                         else btnClass = 'bg-gray-50 text-gray-400 border-2 border-gray-200 opacity-50'
                       }
-                      
+
                       return (
                         <button
                           key={oi}
-                          onClick={() => answerFunCheck(checkId, oi, oi === currentQ.correct_index)}
+                          onClick={() => answerQuizQuestion(currentQ.id, oi, oi === currentQ.correct_index)}
                           disabled={answered}
                           className={`text-left px-5 py-4 rounded-xl font-bold text-[15px] transition-all duration-300 ${btnClass}`}
                         >
                           <div className="flex items-center">
                             <span className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 font-bold border-2 ${
-                              answered && oi === currentQ.correct_index ? 'bg-emerald-500 border-emerald-500 text-white' : 
-                              answered && oi === userAnswer ? 'bg-red-500 border-red-500 text-white' : 
+                              answered && oi === currentQ.correct_index ? 'bg-green-500 border-green-500 text-white' :
+                              answered && oi === userAnswer ? 'bg-red-500 border-red-500 text-white' :
                               'bg-white border-gray-300 text-gray-500'
                             }`}>
                               {['A', 'B', 'C', 'D'][oi]}
@@ -416,15 +509,15 @@ export default function LessonDetail() {
                     })}
                   </div>
 
-                  {/* Carousel Controls */}
+                  {/* Navigation Controls */}
                   <div className="flex items-center justify-between pt-6 border-t border-gray-100">
                     <button
                       onClick={() => setCurrentQuizIndex(prev => Math.max(0, prev - 1))}
                       disabled={currentQuizIndex === 0}
                       className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all ${
-                        currentQuizIndex === 0 
-                          ? 'text-gray-400 cursor-not-allowed opacity-50' 
-                          : 'bg-brand-50 text-brand-600 hover:bg-brand-100 hover:scale-105 cursor-pointer border border-brand-200'
+                        currentQuizIndex === 0
+                          ? 'text-gray-400 cursor-not-allowed opacity-50'
+                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:scale-105 cursor-pointer border border-blue-200'
                       }`}
                     >
                       <span className="text-xl">←</span> Previous
@@ -436,7 +529,7 @@ export default function LessonDetail() {
                       className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all ${
                         !isCorrect || currentQuizIndex === totalFunChecks - 1
                           ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer animate-pulse-glow'
+                          : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer'
                       }`}
                     >
                       Next <span className="text-xl">→</span>
@@ -458,8 +551,8 @@ export default function LessonDetail() {
               {isReview ? 'Already Completed!' : 'Lesson Complete!'}
             </h2>
             <p className="text-gray-600 text-lg mt-2 mb-6">
-              {isReview 
-                ? 'You already completed this lesson. Review it anytime or head back to lessons.' 
+              {isReview
+                ? 'You already completed this lesson. Review it anytime or head back to lessons.'
                 : 'Amazing job! You mastered all the concepts block by block!'}
             </p>
 
@@ -470,17 +563,29 @@ export default function LessonDetail() {
                  </Button>
                </Link>
              ) : (
-               <Button
-                 variant="primary"
-                 className="text-xl px-10 py-4 w-full sm:w-auto transform hover:scale-105 transition-all shadow-xl bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-transparent"
-                 onClick={() => {
-                   markLessonCompleted(lesson.id)
-                   showToast('🎉 Lesson completed! Next lesson unlocked!', 'success')
-                   setTimeout(() => navigate('/lessons'), 800)
-                 }}
-               >
-                 ✅ Complete Lesson &amp; Continue
-               </Button>
+               <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                 {dbQuestions.length > 0 && (
+                   <Link to={`/quiz/${dbLessonId}`}>
+                     <Button
+                       variant="primary"
+                       className="text-lg px-8 py-4 w-full sm:w-auto transform hover:scale-105 transition-all shadow-lg bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white border-transparent"
+                     >
+                       📝 Take Full Quiz
+                     </Button>
+                   </Link>
+                 )}
+                 <Button
+                   variant="primary"
+                   className="text-lg px-10 py-4 w-full sm:w-auto transform hover:scale-105 transition-all shadow-xl bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-transparent"
+                   onClick={() => {
+                     markLessonCompleted(lesson.id)
+                     showToast('🎉 Lesson completed! Next lesson unlocked!', 'success')
+                     setTimeout(() => navigate('/lessons'), 800)
+                   }}
+                 >
+                   ✅ Complete Lesson &amp; Continue
+                 </Button>
+               </div>
              )}
           </Card>
         </div>
