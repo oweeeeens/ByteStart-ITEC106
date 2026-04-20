@@ -1047,8 +1047,21 @@
 .cb-dark .text-steel,
 .cb-dark [class*="text-gray-4"],
 .cb-dark [class*="text-gray-5"],
-.cb-dark [class*="text-gray-6"] {
+.cb-dark [class*="text-gray-6"],
+.cb-dark [class*="text-slate-4"],
+.cb-dark [class*="text-slate-5"],
+.cb-dark [class*="text-slate-6"] {
   color: var(--dm-text-muted) !important;
+}
+
+/* Dark shades that become unreadable on dark backgrounds */
+.cb-dark [class*="text-gray-7"],
+.cb-dark [class*="text-gray-8"],
+.cb-dark [class*="text-gray-9"],
+.cb-dark [class*="text-slate-7"],
+.cb-dark [class*="text-slate-8"],
+.cb-dark [class*="text-slate-9"] {
+  color: var(--dm-text) !important;
 }
 
 /* Headings & branded text */
@@ -1080,6 +1093,7 @@
 
 /* Warning text */
 .cb-dark [class*="text-orange-"],
+.cb-dark [class*="text-amber-"],
 .cb-dark [class*="text-yellow-6"],
 .cb-dark [class*="text-yellow-7"] {
   color: var(--dm-warning) !important;
