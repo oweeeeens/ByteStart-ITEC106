@@ -35,11 +35,11 @@ export default function LessonCard({ lesson, lessonNumber, status }) {
           <div className={`${badgeColor} text-white w-12 h-12 rounded-full flex items-center justify-center text-lg font-extrabold shadow-md`}>
             {isCompleted ? '✓' : lessonNumber}
           </div>
-          <div className="relative">
+          <div className="relative w-24 h-24">
             <img
               src={lesson.image}
               alt={lesson.alt || lesson.title || 'Lesson image'}
-              className={`w-24 h-24 object-contain rounded-xl border-2 ${isLocked ? 'border-gray-200 grayscale' : 'border-blue-200'} bg-white`}
+              className={`w-full h-full object-contain rounded-xl border-2 ${isLocked ? 'border-gray-200 grayscale' : 'border-blue-200'} bg-white`}
             />
             {isCompleted && (
               <div className="absolute inset-0 bg-green-500/20 rounded-xl flex items-center justify-center">

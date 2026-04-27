@@ -3,7 +3,7 @@ export const quizBank = {
   lesson0: [
     {
       prompt: 'Look at the image. What type of electronic device is shown?',
-      image: '/images/hero-computer.png',
+
       alt: 'A desktop computer with a monitor, keyboard, and mouse',
       options: ['A computer', 'A television', 'A calculator', 'A gaming console'],
       answer: 0,
@@ -11,7 +11,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the computer part shown in this image.',
-      image: '/images/tower.png',
+
       alt: 'A computer system unit (tower case)',
       options: ['Refrigerator', 'System Unit', 'Lamp', 'Chair'],
       answer: 1,
@@ -19,7 +19,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at this image. What type of computer is shown?',
-      image: '/images/quiz/laptop.png',
+
       alt: 'A laptop computer',
       options: ['Desktop computer', 'Tablet', 'Laptop', 'Smartphone'],
       answer: 2,
@@ -27,7 +27,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What type of device is this?',
-      image: '/images/quiz/tablet.png',
+
       alt: 'A tablet device',
       options: ['Laptop', 'Tablet', 'Microwave', 'Desktop'],
       answer: 1,
@@ -35,7 +35,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What does this symbol represent?',
-      image: '/images/quiz/internet-icon.png',
+
       alt: 'A globe with connection lines representing the internet',
       options: ['A long cable', 'The internet', 'A power strip', 'Bluetooth'],
       answer: 1,
@@ -47,7 +47,7 @@ export const quizBank = {
   lesson1: [
     {
       prompt: 'What input device is shown in this image?',
-      image: '/images/keyboard.png',
+
       alt: 'A computer keyboard',
       options: ['Keyboard', 'Monitor', 'Mouse', 'Printer'],
       answer: 0,
@@ -55,7 +55,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the input device shown in this image.',
-      image: '/images/mouse.png',
+
       alt: 'A computer mouse',
       options: ['Speaker', 'Mouse', 'Projector', 'Scanner'],
       answer: 1,
@@ -63,7 +63,7 @@ export const quizBank = {
     },
     {
       prompt: 'What input device is shown in this image?',
-      image: '/images/microphone.png',
+
       alt: 'A microphone connected to a computer',
       options: ['Printer', 'Monitor', 'Microphone', 'Headphones'],
       answer: 2,
@@ -71,7 +71,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What input device is this?',
-      image: '/images/quiz/scanner.png',
+
       alt: 'A flatbed scanner',
       options: ['Printer', 'Speaker', 'Scanner', 'Monitor'],
       answer: 2,
@@ -79,7 +79,7 @@ export const quizBank = {
     },
     {
       prompt: 'What input device is shown in this image?',
-      image: '/images/quiz/touchscreen.png',
+
       alt: 'A person using a touchscreen display',
       options: ['Mouse', 'Keyboard', 'Touchscreen', 'Webcam'],
       answer: 2,
@@ -91,7 +91,7 @@ export const quizBank = {
   lesson2: [
     {
       prompt: 'What output device is shown in this image?',
-      image: '/images/monitor.png',
+
       alt: 'A computer monitor displaying content',
       options: ['Keyboard', 'Monitor', 'Mouse', 'Microphone'],
       answer: 1,
@@ -99,7 +99,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the output device shown in this image.',
-      image: '/images/speaker.png',
+
       alt: 'A pair of computer speakers',
       options: ['Speakers', 'Scanner', 'Webcam', 'Router'],
       answer: 0,
@@ -107,7 +107,7 @@ export const quizBank = {
     },
     {
       prompt: 'What output device is shown in this image?',
-      image: '/images/printer.png',
+
       alt: 'A printer printing a document',
       options: ['Monitor', 'Keyboard', 'Printer', 'Mouse'],
       answer: 2,
@@ -115,7 +115,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What output device is this?',
-      image: '/images/headphones.png',
+
       alt: 'A pair of headphones',
       options: ['Speakers', 'Projector', 'Headphones', 'Printer'],
       answer: 2,
@@ -123,7 +123,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the output device shown in this image.',
-      image: '/images/quiz/projector.png',
+
       alt: 'A projector displaying on a screen',
       options: ['Scanner', 'Webcam', 'Output device called a Projector', 'Keyboard'],
       answer: 2,
@@ -135,7 +135,7 @@ export const quizBank = {
   lesson3: [
     {
       prompt: 'Look at the image. What computer part is this?',
-      image: '/images/tower.png',
+
       alt: 'A computer tower case (system unit)',
       options: ['System Unit', 'Printer', 'Projector', 'Mouse'],
       answer: 0,
@@ -143,7 +143,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the component shown in this image.',
-      image: '/images/quiz/cpu.png',
+
       alt: 'A CPU (Central Processing Unit) chip',
       options: ['CPU', 'Monitor', 'Keyboard', 'USB Drive'],
       answer: 0,
@@ -151,7 +151,7 @@ export const quizBank = {
     },
     {
       prompt: 'What computer component is shown in this image?',
-      image: '/images/quiz/ram.png',
+
       alt: 'A RAM (memory) module',
       options: ['Hard Drive', 'RAM', 'Power Supply', 'Graphics Card'],
       answer: 1,
@@ -159,7 +159,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What part of the computer is this?',
-      image: '/images/quiz/motherboard.png',
+
       alt: 'A motherboard with slots and connectors',
       options: ['Power cable', 'Motherboard', 'Speakers', 'Mouse'],
       answer: 1,
@@ -167,7 +167,7 @@ export const quizBank = {
     },
     {
       prompt: 'What part shown in this image keeps the computer cool?',
-      image: '/images/quiz/cooling-fan.png',
+
       alt: 'A computer cooling fan inside a system unit',
       options: ['The monitor', 'Cooling fan', 'The keyboard', 'The printer'],
       answer: 1,
@@ -179,7 +179,7 @@ export const quizBank = {
   lesson4: [
     {
       prompt: 'What storage device is shown in this image?',
-      image: '/images/hdd-open.png',
+
       alt: 'An open hard disk drive showing the platters inside',
       options: ['Hard Drive (HDD)', 'Mouse', 'Webcam', 'Microphone'],
       answer: 0,
@@ -187,7 +187,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the storage device shown in this image.',
-      image: '/images/quiz/usb-flash-drive.png',
+
       alt: 'A USB flash drive',
       options: ['USB Flash Drive', 'CPU', 'Speakers', 'Monitor'],
       answer: 0,
@@ -195,7 +195,7 @@ export const quizBank = {
     },
     {
       prompt: 'What storage device is shown in this image?',
-      image: '/images/quiz/ssd.png',
+
       alt: 'A solid-state drive (SSD)',
       options: ['Hard Drive (HDD)', 'SSD (Solid-State Drive)', 'RAM', 'DVD'],
       answer: 1,
@@ -203,7 +203,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What type of storage is this?',
-      image: '/images/quiz/cloud-storage.png',
+
       alt: 'A cloud icon with files showing cloud storage',
       options: ['USB Drive', 'Cloud Storage', 'DVD disc', 'Hard Drive'],
       answer: 1,
@@ -211,7 +211,7 @@ export const quizBank = {
     },
     {
       prompt: 'Identify the storage device shown in this image.',
-      image: '/images/quiz/cd-dvd.png',
+
       alt: 'A CD or DVD disc',
       options: ['USB Flash Drive', 'Hard Drive', 'CD / DVD Disc', 'Memory Card'],
       answer: 2,
@@ -223,7 +223,7 @@ export const quizBank = {
   lesson5: [
     {
       prompt: 'Look at the image. What safety item is this?',
-      image: '/images/quiz/anti-static-strap.png',
+
       alt: 'An anti-static wrist strap used when handling computer parts',
       options: ['Anti-static Wrist Strap', 'VR Headset', 'Sunglasses', 'Headphones'],
       answer: 0,
@@ -231,7 +231,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What safe habit is being shown?',
-      image: '/images/clean-screen.png',
+
       alt: 'A person gently cleaning a monitor with a soft cloth',
       options: ['Eating near the keyboard', 'Pulling cables hard', 'Cleaning gently with a soft cloth', 'Spilling water on it'],
       answer: 2,
@@ -239,7 +239,7 @@ export const quizBank = {
     },
     {
       prompt: 'What does the image show as the correct way to turn off a computer?',
-      image: '/images/quiz/shutdown-menu.png',
+
       alt: 'A computer screen showing the shut down option in the Start menu',
       options: ['Pull the plug from the wall', 'Press and hold the power button', 'Use the Start menu to shut down', 'Close the monitor lid'],
       answer: 2,
@@ -247,7 +247,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What healthy habit is this student practicing?',
-      image: '/images/quiz/screen-break.png',
+
       alt: 'A student stretching and taking a break from the computer screen',
       options: ['Skipping lunch', 'Playing games all day', 'Taking a break from the screen', 'Sleeping at the desk'],
       answer: 2,
@@ -255,7 +255,7 @@ export const quizBank = {
     },
     {
       prompt: 'Look at the image. What should you do when you see something like this?',
-      image: '/images/quiz/suspicious-link.png',
+
       alt: 'A computer screen showing a suspicious pop-up message with a strange link',
       options: ['Click it right away', 'Share it with friends', 'Do not click it — it could be harmful', 'Download the file from it'],
       answer: 2,
