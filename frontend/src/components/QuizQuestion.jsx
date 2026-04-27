@@ -2,13 +2,15 @@ export default function QuizQuestion({ item, onAnswer, selected, answered, isCor
   if (!item) return <div className="text-center py-8 text-steel">No question available.</div>
   return (
     <div className="space-y-5" role="group" aria-label={`Question: ${item.prompt}`}>
-      <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 overflow-hidden flex items-center justify-center p-4">
-        <img
-          src={item.image}
-          alt={item.alt || item.prompt}
-          className="max-w-full max-h-72 sm:max-h-80 object-contain bg-white rounded-xl"
-        />
-      </div>
+      {item.image && (
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 overflow-hidden flex items-center justify-center p-4">
+          <img
+            src={item.image}
+            alt={item.alt || item.prompt}
+            className="max-w-full max-h-72 sm:max-h-80 object-contain bg-white rounded-xl"
+          />
+        </div>
+      )}
       <p className="text-xl font-bold heading text-brand-700" id="quiz-question">{item.prompt}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-labelledby="quiz-question">
         {item.options.map((opt, idx) => {
