@@ -97,11 +97,11 @@ export default function AdminLayout() {
         <div className="admin-user-badge-container">
           <div className="admin-user-badge">
             <div className="admin-user-avatar">
-              <span>{user.username.charAt(0).toUpperCase()}</span>
+              <span>{user.email.charAt(0).toUpperCase()}</span>
             </div>
             <div>
               <p className="admin-user-acting">Acting As</p>
-              <p className="admin-user-name">{user.username}</p>
+              <p className="admin-user-name">{user.email}</p>
             </div>
           </div>
         </div>

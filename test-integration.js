@@ -50,7 +50,7 @@ async function testSecurityBlockedPasswords() {
 
   for (const pwd of blockedPasswords) {
     const result = await testAPI('POST', '/auth/forgot-password', {
-      username: 'testuser',
+      email: 'testuser@example.com',
       guardian_name: 'Test Guardian',
       new_password: pwd
     });
@@ -64,7 +64,7 @@ async function testSecurityBlockedPasswords() {
 
   // Test that a strong password is NOT rejected
   const result = await testAPI('POST', '/auth/forgot-password', {
-    username: 'nonexistent_user_for_test',
+    email: 'nonexistent_user_for_test@example.com',
     guardian_name: 'Test Guardian',
     new_password: 'MyStr0ng!Pass'
   });
@@ -83,22 +83,22 @@ async function testGuardianNameNormalization() {
   log('\n=== Phase 2: UX - Guardian Name Normalization ===', YELLOW);
 
   // First, register a test user
-  const username = `testuser_${Date.now()}`;
+  const email = `testuser_${Date.now()}@example.com`;
   const guardianName = 'John Smith';
   const password = 'TestPass123';
 
-  log(`\nRegistering test user: ${username}`);
+  log(`\nRegistering test user: ${email}`);
   const regResult = await testAPI('POST', '/auth/register', {
     full_name: 'Test User',
     guardian_name: guardianName,
     age: 12,
     grade_level: 'Grade 6',
-    username: username,
+    email: email,
     password: password
   });
 
   if (regResult.status === 200) {
-    pass(`Registered test user: ${username}`);
+    pass(`Registered test user: ${email}`);
 
     // Test various guardian name formats
     const variations = [
@@ -111,7 +111,7 @@ async function testGuardianNameNormalization() {
 
     for (const variant of variations) {
       const result = await testAPI('POST', '/auth/forgot-password', {
-        username: username,
+        email: email,
         guardian_name: variant.input,
         new_password: 'NewTestPass123'
       });
@@ -125,7 +125,7 @@ async function testGuardianNameNormalization() {
 
     // Test wrong guardian name
     const wrongResult = await testAPI('POST', '/auth/forgot-password', {
-      username: username,
+      email: email,
       guardian_name: 'Jane Doe',
       new_password: 'NewTestPass123'
     });

@@ -26,9 +26,9 @@ function defaultProgress() {
   return prog
 }
 
-function storageKeyProgress(username) { return `cb_progress_${username}` }
-function storageKeySettings(username) { return `cb_settings_${username}` }
-function storageKeyHistory(username) { return `cb_history_${username}` }
+function storageKeyProgress(email) { return `cb_progress_${email}` }
+function storageKeySettings(email) { return `cb_settings_${email}` }
+function storageKeyHistory(email) { return `cb_history_${email}` }
 const USER_KEY = 'cb_user'
 
 function hasToken() {
@@ -95,12 +95,13 @@ export function AppProvider({ children }) {
     const storedUser = localStorage.getItem(USER_KEY)
     if (storedUser) {
       const parsed = JSON.parse(storedUser)
-      setUser(parsed)
-      const p = localStorage.getItem(storageKeyProgress(parsed.username))
+      const email = parsed.email || parsed.username
+      setUser(email ? { ...parsed, email } : parsed)
+      const p = localStorage.getItem(storageKeyProgress(email))
       setProgress(p ? JSON.parse(p) : defaultProgress())
-      const s = localStorage.getItem(storageKeySettings(parsed.username))
+      const s = localStorage.getItem(storageKeySettings(email))
       setSettings(s ? JSON.parse(s) : initialSettings)
-      const h = localStorage.getItem(storageKeyHistory(parsed.username))
+      const h = localStorage.getItem(storageKeyHistory(email))
       setQuizHistory(h ? JSON.parse(h) : [])
       if (hasToken()) {
         syncAllFromAPI().catch(() => {})
@@ -115,9 +116,9 @@ export function AppProvider({ children }) {
   useEffect(() => {
     if (user) {
       localStorage.setItem(USER_KEY, JSON.stringify(user))
-      localStorage.setItem(storageKeyProgress(user.username), JSON.stringify(progress))
-      localStorage.setItem(storageKeySettings(user.username), JSON.stringify(settings))
-      localStorage.setItem(storageKeyHistory(user.username), JSON.stringify(quizHistory))
+      localStorage.setItem(storageKeyProgress(user.email), JSON.stringify(progress))
+      localStorage.setItem(storageKeySettings(user.email), JSON.stringify(settings))
+      localStorage.setItem(storageKeyHistory(user.email), JSON.stringify(quizHistory))
     }
   }, [user, progress, settings, quizHistory])
 
@@ -152,22 +153,23 @@ export function AppProvider({ children }) {
   }, [user, syncAllFromAPI])
 
   function login(userData, { isNewAccount = false } = {}) {
-    const username = typeof userData === 'string' ? userData : userData.username
+    const email = typeof userData === 'string' ? userData : (userData.email || userData.username)
     const role = typeof userData === 'string' ? 'student' : (userData.role || 'student')
-    setUser({ username, role })
+    const id = typeof userData === 'string' ? undefined : userData.id
+    setUser({ email, role, id })
     if (isNewAccount) {
-      localStorage.removeItem(storageKeyProgress(username))
-      localStorage.removeItem(storageKeySettings(username))
-      localStorage.removeItem(storageKeyHistory(username))
+      localStorage.removeItem(storageKeyProgress(email))
+      localStorage.removeItem(storageKeySettings(email))
+      localStorage.removeItem(storageKeyHistory(email))
       setProgress(defaultProgress())
       setSettings(initialSettings)
       setQuizHistory([])
     } else {
-      const existing = localStorage.getItem(storageKeyProgress(username))
+      const existing = localStorage.getItem(storageKeyProgress(email))
       setProgress(existing ? JSON.parse(existing) : defaultProgress())
-      const s = localStorage.getItem(storageKeySettings(username))
+      const s = localStorage.getItem(storageKeySettings(email))
       setSettings(s ? JSON.parse(s) : initialSettings)
-      const h = localStorage.getItem(storageKeyHistory(username))
+      const h = localStorage.getItem(storageKeyHistory(email))
       setQuizHistory(h ? JSON.parse(h) : [])
     }
     if (hasToken()) {

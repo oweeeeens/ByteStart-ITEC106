@@ -10,9 +10,11 @@ CREATE TABLE IF NOT EXISTS users (
   guardian_name VARCHAR(100) NOT NULL,
   age INT NULL,
   grade_level VARCHAR(20) NULL,
-  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  role VARCHAR(20) NOT NULL DEFAULT 'student'
+  role VARCHAR(20) NOT NULL DEFAULT 'student',
+  failed_login_attempts INT NOT NULL DEFAULT 0,
+  locked_until DATETIME NULL
 );
 `)
   await pool.query(`

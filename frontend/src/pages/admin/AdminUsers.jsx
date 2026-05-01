@@ -82,7 +82,7 @@ export default function AdminUsers() {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-white group-hover:text-cyan-400 transition-colors uppercase tracking-tight">{u.full_name}</span>
-                        <span className="text-[10px] font-mono text-slate-500">@{u.username}</span>
+                        <span className="text-[10px] font-mono text-slate-500">{u.email}</span>
                       </div>
                     </div>
                   </td>

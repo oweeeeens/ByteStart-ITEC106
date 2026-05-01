@@ -23,7 +23,7 @@ router.get('/users', async (req, res) => {
   try {
     const pool = await req.poolPromise
     const [users] = await pool.query(
-      'SELECT id, full_name, guardian_name, age, grade_level, username, role FROM users'
+      'SELECT id, full_name, guardian_name, age, grade_level, email, role FROM users'
     )
     res.json({ users })
   } catch {

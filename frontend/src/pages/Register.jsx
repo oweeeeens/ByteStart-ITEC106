@@ -16,6 +16,8 @@ const BLOCKED_PASSWORDS = new Set([
   'computer', 'compubasics', 'grade6', 'student', 'school', 'teacher',
 ])
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 function checkPasswordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: 'bg-gray-200', checks: { length: false, upper: false, lower: false, number: false, notBreached: true } }
   const hasLower = /[a-z]/.test(pw)
@@ -69,12 +71,12 @@ function EyeIcon({ open }) {
 
 export default function Register() {
   useDocTitle('Create Account')
-  const [form, setForm] = useState({ full_name: '', guardian_name: '', age: '', grade_level: '', username: '', password: '' })
+  const [form, setForm] = useState({ full_name: '', guardian_name: '', age: '', grade_level: '', email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [offerLocal, setOfferLocal] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [usernameStatus, setUsernameStatus] = useState(null)
+  const [emailStatus, setEmailStatus] = useState(null)
   const navigate = useNavigate()
   const { login } = useApp()
   const { showToast } = useToast()
@@ -88,18 +90,21 @@ export default function Register() {
   const nameValid = form.full_name.trim().length >= 2
   const guardianTouched = form.guardian_name !== ''
   const guardianValid = form.guardian_name.trim().length >= 2
+  const emailValue = form.email.trim()
+  const emailTouched = form.email !== ''
+  const emailValid = emailValue ? EMAIL_RE.test(emailValue.toLowerCase()) : false
 
-  const checkUsername = useCallback((value) => {
+  const checkEmail = useCallback((value) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    const trimmed = value.trim()
-    if (trimmed.length < 3) { setUsernameStatus(null); return }
-    setUsernameStatus('checking')
+    const trimmed = value.trim().toLowerCase()
+    if (!EMAIL_RE.test(trimmed)) { setEmailStatus(null); return }
+    setEmailStatus('checking')
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await api.checkUsername(trimmed)
-        setUsernameStatus(res.available ? 'available' : 'taken')
+        const res = await api.checkEmail(trimmed)
+        setEmailStatus(res.available ? 'available' : 'taken')
       } catch {
-        setUsernameStatus(null)
+        setEmailStatus(null)
       }
     }, 500)
   }, [])
@@ -114,7 +119,9 @@ export default function Register() {
     setOfferLocal(false)
     if (!form.full_name.trim()) { setError('Please enter your full name.'); return }
     if (!form.guardian_name.trim()) { setError('Please enter your guardian\'s name.'); return }
-    if (!form.username.trim() || form.username.trim().length < 3) { setError('Username must be at least 3 characters.'); return }
+    if (!form.email.trim()) { setError('Please enter your email address.'); return }
+    const normalizedEmail = form.email.trim().toLowerCase()
+    if (!EMAIL_RE.test(normalizedEmail)) { setError('Please enter a valid email address.'); return }
     if (!form.password || form.password.length < 8) { setError('Password must be at least 8 characters.'); return }
     if (BLOCKED_PASSWORDS.has(form.password.toLowerCase())) {
       setError('This password was found in data breaches. Please choose a stronger one.')
@@ -130,18 +137,12 @@ export default function Register() {
       showToast('You must be between 10 and 15 years old to register.', 'warning')
       return
     }
-    const grade = form.grade_level.trim().toLowerCase().replace(/\s+/g, '')
-    if (!grade || (!grade.includes('6') || !(grade.includes('grade') || grade.includes('g') || grade === '6'))) {
-      setError('CompuBasics is designed for Grade 6 students only.')
-      showToast('Only Grade 6 students can create an account.', 'warning')
-      return
-    }
     try {
       setLoading(true)
-      const payload = { ...form, age: form.age ? Number(form.age) : null }
+      const payload = { ...form, email: normalizedEmail, age: form.age ? Number(form.age) : null, grade_level: '6' }
       const res = await api.register(payload)
       localStorage.setItem('cb_token', res.token)
-      login(res.user || { username: form.username, role: 'student' }, { isNewAccount: true })
+      login(res.user || { email: normalizedEmail, role: 'student' }, { isNewAccount: true })
       navigate('/')
     } catch (err) {
       const msg = err?.message || 'Registration failed'
@@ -154,7 +155,7 @@ export default function Register() {
 
   function update(k, v) {
     setForm((f) => ({ ...f, [k]: v }))
-    if (k === 'username') checkUsername(v)
+    if (k === 'email') checkEmail(v)
   }
 
   return (
@@ -206,90 +207,79 @@ export default function Register() {
                 <p id="reg-guardian-err" className="mt-1 text-xs text-red-500 font-medium">⚠️ Please enter your guardian's name</p>
               )}
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="block" htmlFor="reg-age">
-                <span className="block mb-1 font-bold text-ink">🎂 Age <span className="text-red-500">*</span></span>
-                <input
-                  id="reg-age"
-                  type="number"
-                  min="10"
-                  max="15"
-                  placeholder="10–15 only"
-                  aria-required="true"
-                  aria-describedby={ageTouched && !ageValid ? 'reg-age-err' : undefined}
-                  className={`w-full border-2 rounded-xl px-4 py-3 focus:ring-2 outline-none transition-all ${
-                    !ageTouched ? 'border-gray-200 focus:border-brand-500 focus:ring-brand-200'
-                    : ageValid ? 'border-green-300 focus:border-green-500 focus:ring-green-200'
-                    : 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                  }`}
-                  value={form.age}
-                  onChange={(e) => update('age', e.target.value)}
-                  required
-                />
-                {ageTouched && !ageValid && (
-                  <p id="reg-age-err" className="mt-1 text-xs text-red-500 font-medium">⚠️ Must be between 10 and 15 years old</p>
-                )}
-                {ageTouched && ageValid && (
-                  <p className="mt-1 text-xs text-green-600 font-medium">✓ Age accepted</p>
-                )}
-              </label>
-              <label className="block" htmlFor="reg-grade">
-                <span className="block mb-1 font-bold text-ink">🏫 Grade Level <span className="text-red-500">*</span></span>
-                <select
-                  id="reg-grade"
-                  aria-required="true"
-                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all bg-white"
-                  value={form.grade_level}
-                  onChange={(e) => update('grade_level', e.target.value)}
-                  required
-                >
-                  <option value="">Select grade</option>
-                  <option value="Grade 6">Grade 6</option>
-                </select>
-              </label>
+            <label className="block" htmlFor="reg-age">
+              <span className="block mb-1 font-bold text-ink">🎂 Age <span className="text-red-500">*</span></span>
+              <input
+                id="reg-age"
+                type="number"
+                min="10"
+                max="15"
+                placeholder="10–15 only"
+                aria-required="true"
+                aria-describedby={ageTouched && !ageValid ? 'reg-age-err' : undefined}
+                className={`w-full border-2 rounded-xl px-4 py-3 focus:ring-2 outline-none transition-all ${
+                  !ageTouched ? 'border-gray-200 focus:border-brand-500 focus:ring-brand-200'
+                  : ageValid ? 'border-green-300 focus:border-green-500 focus:ring-green-200'
+                  : 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                }`}
+                value={form.age}
+                onChange={(e) => update('age', e.target.value)}
+                required
+              />
+              {ageTouched && !ageValid && (
+                <p id="reg-age-err" className="mt-1 text-xs text-red-500 font-medium">⚠️ Must be between 10 and 15 years old</p>
+              )}
+              {ageTouched && ageValid && (
+                <p className="mt-1 text-xs text-green-600 font-medium">✓ Age accepted</p>
+              )}
+            </label>
+            <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+              <p className="text-sm font-medium text-blue-900">🏫 Grade Level: <strong>6</strong></p>
+              <p className="text-xs text-blue-700 mt-1">CompuBasics is designed for Grade 6 students</p>
             </div>
-            <label className="block" htmlFor="reg-username">
-              <span className="block mb-1 font-bold text-ink">🆔 Username</span>
+            <label className="block" htmlFor="reg-email">
+              <span className="block mb-1 font-bold text-ink">📧 Email</span>
               <div className="relative">
                 <input
-                  id="reg-username"
-                  autoComplete="username"
-                  placeholder="Choose a username (min 3 chars)"
+                  id="reg-email"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
                   aria-required="true"
                   aria-describedby={
-                    usernameStatus === 'taken' ? 'reg-username-taken'
-                    : form.username.trim() !== '' && form.username.trim().length < 3 ? 'reg-username-short'
-                    : usernameStatus === 'available' ? 'reg-username-ok'
+                    emailStatus === 'taken' ? 'reg-email-taken'
+                    : emailTouched && !emailValid ? 'reg-email-invalid'
+                    : emailStatus === 'available' ? 'reg-email-ok'
                     : undefined
                   }
                   className={`w-full border-2 rounded-xl px-4 py-3 pr-10 focus:ring-2 outline-none transition-all ${
-                    !form.username.trim() ? 'border-gray-200 focus:border-brand-500 focus:ring-brand-200'
-                    : form.username.trim().length < 3 ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                    : usernameStatus === 'taken' ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                    : usernameStatus === 'available' ? 'border-green-300 focus:border-green-500 focus:ring-green-200'
+                    !emailTouched ? 'border-gray-200 focus:border-brand-500 focus:ring-brand-200'
+                    : !emailValid ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : emailStatus === 'taken' ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : emailStatus === 'available' ? 'border-green-300 focus:border-green-500 focus:ring-green-200'
                     : 'border-gray-200 focus:border-brand-500 focus:ring-brand-200'
                   }`}
-                  value={form.username}
-                  onChange={(e) => update('username', e.target.value)}
+                  value={form.email}
+                  onChange={(e) => update('email', e.target.value)}
                 />
-                {usernameStatus === 'checking' && (
+                {emailStatus === 'checking' && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm animate-pulse">⏳</span>
                 )}
-                {usernameStatus === 'available' && (
+                {emailStatus === 'available' && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-sm">✓</span>
                 )}
-                {usernameStatus === 'taken' && (
+                {emailStatus === 'taken' && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 text-sm">✗</span>
                 )}
               </div>
-              {form.username.trim() !== '' && form.username.trim().length < 3 && (
-                <p id="reg-username-short" className="mt-1 text-xs text-red-500 font-medium">⚠️ Must be at least 3 characters</p>
+              {emailTouched && !emailValid && (
+                <p id="reg-email-invalid" className="mt-1 text-xs text-red-500 font-medium">⚠️ Enter a valid email address</p>
               )}
-              {usernameStatus === 'taken' && (
-                <p id="reg-username-taken" className="mt-1 text-xs text-red-500 font-medium">⚠️ This username is already taken</p>
+              {emailStatus === 'taken' && (
+                <p id="reg-email-taken" className="mt-1 text-xs text-red-500 font-medium">⚠️ This email is already registered</p>
               )}
-              {usernameStatus === 'available' && (
-                <p id="reg-username-ok" className="mt-1 text-xs text-green-600 font-medium">✓ Username is available</p>
+              {emailStatus === 'available' && (
+                <p id="reg-email-ok" className="mt-1 text-xs text-green-600 font-medium">✓ Email is available</p>
               )}
             </label>
             <label className="block" htmlFor="reg-password">
@@ -356,7 +346,8 @@ export default function Register() {
                 type="button"
                 className="btn btn-secondary w-full"
                 onClick={() => {
-                  login({ username: form.username || 'Guest', role: 'student' })
+                  const localEmail = form.email.trim() || 'guest@compubasics.local'
+                  login({ email: localEmail, role: 'student' })
                   localStorage.setItem('cb_token', 'local')
                   navigate('/')
                 }}

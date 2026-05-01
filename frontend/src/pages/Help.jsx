@@ -26,7 +26,7 @@ export default function Help() {
       steps: [
         'Click "Register" on the navigation bar at the top.',
         'Type your full name, age (10–15), and select Grade 6.',
-        'Choose a username (at least 3 characters).',
+        'Enter your email address.',
         'Create a strong password (8+ characters, with uppercase, lowercase, and a number).',
         'Click "Create Account" — you\'re all set!',
       ],
@@ -72,7 +72,7 @@ export default function Help() {
       image: '/images/guides/guide-profile.png',
       alt: 'Screenshot of the Profile page showing progress stats and lesson completion',
       steps: [
-        'Click your username or "Profile" in the navigation bar.',
+        'Click your email or "Profile" in the navigation bar.',
         'See your overall progress bar at the top.',
         'Check each lesson\'s status: completed ✅, unlocked 🔓, or locked 🔒.',
         'View your best quiz scores and quiz history.',

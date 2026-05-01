@@ -64,7 +64,7 @@ export default function Navbar() {
               {/* User greeting badge */}
               <div className="hidden lg:flex items-center gap-1.5 bg-white/15 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-bold border border-white/20">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span>{user.username}</span>
+                <span>{user.email}</span>
                 {completedCount > 0 && (
                   <span className="bg-yellow-400/30 text-yellow-100 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold ml-0.5">
                     ⭐{completedCount}
@@ -115,7 +115,7 @@ export default function Navbar() {
                 {/* Mobile user greeting */}
                 <div className="flex items-center gap-2 bg-white/15 text-white px-3 py-2 rounded-xl text-sm font-bold border border-white/20 mb-1">
                   <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <span>Hello, {user.username}!</span>
+                  <span>Hello, {user.email}!</span>
                   {completedCount > 0 && (
                     <span className="bg-yellow-400/30 text-yellow-100 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold">
                       ⭐{completedCount}

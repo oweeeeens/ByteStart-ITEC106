@@ -7,7 +7,7 @@ import useDocTitle from '../hooks/useDocTitle.js'
 
 export default function Login() {
   useDocTitle('Sign In')
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -31,20 +31,28 @@ export default function Login() {
   async function onSubmit(e) {
     e.preventDefault()
     setError('')
-    const u = username.trim()
+    const emailValue = email.trim()
     const p = password.trim()
-    if (!u || !p) {
-      setError('Username and password are required.')
+    if (!emailValue || !p) {
+      setError('Email and password are required.')
       return
     }
     try {
       setLoading(true)
-      const res = await api.login(u, p)
+      const res = await api.login(emailValue, p)
       localStorage.setItem('cb_token', res.token)
-      login(res.user || { username: u, role: 'student' })
+      login(res.user || { email: emailValue, role: 'student' })
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err.message || 'Login failed')
+      const message = err.message || 'Login failed'
+      setError(message)
+      if (err.status === 423) {
+        showToast(`🔒 ${message} Please try again in 1 minute.`, 'error', 5000)
+      } else if (err.status === 401) {
+        showToast('❌ Invalid email or password. Please try again.', 'error', 3000)
+      } else {
+        showToast(message, 'error', 3000)
+      }
     } finally {
       setLoading(false)
     }
@@ -60,18 +68,18 @@ export default function Login() {
             <p className="mt-2 text-steel">Sign in to continue learning</p>
           </div>
           <form onSubmit={onSubmit} className="space-y-4" aria-busy={loading}>
-            <label className="block" htmlFor="login-username">
-              <span className="block mb-1 font-bold text-ink">👤 Username</span>
+            <label className="block" htmlFor="login-email">
+              <span className="block mb-1 font-bold text-ink">📧 Email</span>
               <input
-                id="login-username"
-                type="text"
-                autoComplete="username"
-                placeholder="Enter your username"
+                id="login-email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
                 aria-required="true"
                 aria-describedby={error ? 'login-error' : undefined}
                 className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
             <label className="block" htmlFor="login-password">

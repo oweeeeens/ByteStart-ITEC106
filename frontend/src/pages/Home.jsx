@@ -30,7 +30,7 @@ export default function Home() {
           </h1>
           <p className="mt-4 text-steel text-lg leading-relaxed max-w-2xl mx-auto">
             {user
-              ? `Welcome back, ${user.username}! Continue your journey to understand every part of a computer — fun, interactive, and fully accessible.`
+              ? `Welcome back, ${user.email}! Continue your journey to understand every part of a computer — fun, interactive, and fully accessible.`
               : 'Understand every part of a computer through fun, interactive lessons and quizzes — designed for young learners with full accessibility support.'}
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">

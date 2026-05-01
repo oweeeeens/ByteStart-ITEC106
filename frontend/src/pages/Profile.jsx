@@ -52,10 +52,10 @@ export default function Profile() {
       <div className="profile-header-card relative overflow-hidden rounded-2xl border shadow-lg p-6">
         <div className="relative z-10 flex items-center gap-5">
           <div className="profile-avatar w-20 h-20 rounded-2xl flex items-center justify-center text-white text-4xl font-extrabold shadow-lg flex-shrink-0">
-            {user?.username?.[0]?.toUpperCase() || '👤'}
+            {user?.email?.[0]?.toUpperCase() || '👤'}
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-extrabold heading profile-heading">👤 {user?.username}</h1>
+            <h1 className="text-3xl font-extrabold heading profile-heading">👤 {user?.email}</h1>
             <p className="mt-1 text-lg profile-subtitle">
               Completed: <span className="font-bold profile-highlight">{completed}</span> / {total} lessons
             </p>

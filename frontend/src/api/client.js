@@ -41,13 +41,13 @@ async function request(path, opts = {}) {
 }
 
 export const api = {
-  login: (username, password) =>
-    request('/auth/login', { method: 'POST', body: JSON.stringify({ username, password }) }),
+  login: (email, password) =>
+    request('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   register: (payload) =>
     request('/auth/register', { method: 'POST', body: JSON.stringify(payload) }),
-  checkUsername: (username) => request(`/auth/check-username/${encodeURIComponent(username)}`),
-  forgotPassword: (username, guardian_name, new_password) =>
-    request('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ username, guardian_name, new_password }) }),
+  checkEmail: (email) => request(`/auth/check-email/${encodeURIComponent(email)}`),
+  forgotPassword: (email, guardian_name, new_password) =>
+    request('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email, guardian_name, new_password }) }),
   lessons: (courseId) => request(`/courses/${courseId}/lessons`),
   quiz: (lessonId) => request(`/quiz/${lessonId}`),
   submitQuiz: (lessonId, answers) =>

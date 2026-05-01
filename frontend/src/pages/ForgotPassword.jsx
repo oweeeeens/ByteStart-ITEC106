@@ -23,7 +23,7 @@ function EyeIcon({ open }) {
 
 export default function ForgotPassword() {
   useDocTitle('Forgot Password')
-  const [form, setForm] = useState({ username: '', guardian_name: '', new_password: '' })
+  const [form, setForm] = useState({ email: '', guardian_name: '', new_password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -33,17 +33,17 @@ export default function ForgotPassword() {
   async function onSubmit(e) {
     e.preventDefault()
     setError('')
-    if (!form.username.trim() || !form.guardian_name.trim() || !form.new_password) {
+    if (!form.email.trim() || !form.guardian_name.trim() || !form.new_password) {
       setError('Please fill in all fields.')
       return
     }
     try {
       setLoading(true)
-      const res = await api.forgotPassword(form.username, form.guardian_name, form.new_password)
+      const res = await api.forgotPassword(form.email, form.guardian_name, form.new_password)
       showToast(res.message || 'Password updated successfully!', 'success')
       navigate('/login')
     } catch (err) {
-      setError(err?.message || 'Failed to update password. Make sure the username and guardian name match.')
+      setError(err?.message || 'Failed to update password. Make sure the email and guardian name match.')
     } finally {
       setLoading(false)
     }
@@ -59,16 +59,17 @@ export default function ForgotPassword() {
             <p className="mt-2 text-steel">Reset your password with your Guardian's Name.</p>
           </div>
           <form onSubmit={onSubmit} className="space-y-4" aria-busy={loading}>
-            <label className="block" htmlFor="fp-user">
-              <span className="block mb-1 font-bold text-ink">👤 Username</span>
+            <label className="block" htmlFor="fp-email">
+              <span className="block mb-1 font-bold text-ink">📧 Email</span>
               <input
-                id="fp-user"
-                autoComplete="username"
-                placeholder="Your username"
+                id="fp-email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
                 aria-required="true"
                 className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
             </label>
             <label className="block" htmlFor="fp-guardian">
