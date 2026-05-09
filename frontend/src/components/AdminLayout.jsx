@@ -70,7 +70,7 @@ export default function AdminLayout() {
             </svg>
           </div>
           <div>
-            <h1 className="admin-brand-title">Admin</h1>
+            <h1 className="admin-brand-title">Admin Console</h1>
             <p className="admin-brand-subtitle">CompuBasics</p>
           </div>
         </div>

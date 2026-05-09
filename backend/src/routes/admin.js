@@ -200,9 +200,15 @@ router.get('/lessons/:lessonId/questions', async (req, res) => {
 
 router.post('/lessons/:lessonId/questions', async (req, res) => {
   try {
-    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path } =
-      req.body
-    if (!question_text || !option_a || !option_b || !option_c || !option_d || correct_answer === undefined) {
+    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path } = req.body
+    const text = String(question_text || '').trim()
+    const optionA = String(option_a || '').trim()
+    const optionB = String(option_b || '').trim()
+    const optionC = String(option_c || '').trim()
+    const optionD = String(option_d || '').trim()
+    const isBinary = !optionC && !optionD && ['A', 'B'].includes(correct_answer)
+    const hasRequired = text && optionA && optionB && (isBinary || (optionC && optionD))
+    if (!hasRequired || !['A', 'B', 'C', 'D'].includes(correct_answer)) {
       return res.status(400).json({ error: 'Missing required question fields' })
     }
     const pool = await req.poolPromise
@@ -212,7 +218,7 @@ router.post('/lessons/:lessonId/questions', async (req, res) => {
     if (!quizzes.length) return res.status(400).json({ error: 'Quiz not found for this lesson' })
     const [r] = await pool.query(
       'INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_answer, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [quizzes[0].id, question_text, option_a, option_b, option_c, option_d, correct_answer, image_path || null]
+      [quizzes[0].id, text, optionA, optionB, optionC, optionD, correct_answer, image_path || null]
     )
     res.json({ ok: true, id: r.insertId })
   } catch {
@@ -220,14 +226,23 @@ router.post('/lessons/:lessonId/questions', async (req, res) => {
   }
 })
 
-  router.put('/questions/:id', async (req, res) => {
+router.put('/questions/:id', async (req, res) => {
   try {
-    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path } =
-      req.body
+    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path } = req.body
+    const text = String(question_text || '').trim()
+    const optionA = String(option_a || '').trim()
+    const optionB = String(option_b || '').trim()
+    const optionC = String(option_c || '').trim()
+    const optionD = String(option_d || '').trim()
+    const isBinary = !optionC && !optionD && ['A', 'B'].includes(correct_answer)
+    const hasRequired = text && optionA && optionB && (isBinary || (optionC && optionD))
+    if (!hasRequired || !['A', 'B', 'C', 'D'].includes(correct_answer)) {
+      return res.status(400).json({ error: 'Missing required question fields' })
+    }
     const pool = await req.poolPromise
     await pool.query(
       'UPDATE questions SET question_text=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_answer=?, image_path=? WHERE id=?',
-      [question_text, option_a, option_b, option_c, option_d, correct_answer, image_path || null, req.params.id]
+      [text, optionA, optionB, optionC, optionD, correct_answer, image_path || null, req.params.id]
     )
     res.json({ ok: true })
   } catch {

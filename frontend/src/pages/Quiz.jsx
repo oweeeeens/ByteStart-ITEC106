@@ -54,6 +54,7 @@ export default function Quiz() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [answered, setAnswered] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
+  const [passingScore, setPassingScore] = useState(70)
   const [streak, setStreak] = useState(0)
   const [maxStreak, setMaxStreak] = useState(0)
   const [points, setPoints] = useState(0)
@@ -82,6 +83,8 @@ export default function Quiz() {
           }))
           setQuestions(mapped)
         }
+        const scoreValue = Number(res.passing_score)
+        if (Number.isFinite(scoreValue)) setPassingScore(scoreValue)
       } catch {
         // Fallback to local quiz bank
       } finally {
@@ -139,7 +142,7 @@ export default function Quiz() {
     if (current + 1 < questions.length) {
       setCurrent(current + 1)
     } else {
-      const passed = score >= 70
+      const passed = score >= passingScore
       setDone(true)
       setFeedback(passed ? 'Great job! You passed!' : 'Keep trying. You can retry!')
       recordQuizAttempt(lessonId, score, passed)
@@ -154,10 +157,10 @@ export default function Quiz() {
           // Local progress is already saved above
         }
       } else {
-        showToast(`You scored ${score}%. You need at least 70% to pass. Try again!`, 'error')
+        showToast(`You scored ${score}%. You need at least ${passingScore}% to pass. Try again!`, 'error')
       }
     }
-  }, [answered, current, questions, score, lessonId, answers, showToast, recordQuizAttempt, markLessonCompleted])
+  }, [answered, current, questions, score, lessonId, answers, showToast, recordQuizAttempt, markLessonCompleted, passingScore])
 
   const onAnswerRef = useRef(onAnswer)
   const onNextRef = useRef(onNext)
@@ -238,6 +241,7 @@ export default function Quiz() {
               {streak >= 2 && (
                 <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-bold border border-orange-200 animate-fire">🔥 {streak} streak</span>
               )}
+              <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold border border-gray-200">Pass {passingScore}%</span>
               <span className="bg-brand-100 text-brand-700 px-3 py-1 rounded-full text-sm font-bold">{current + 1} / {questions.length}</span>
             </div>
           )}
@@ -304,16 +308,16 @@ export default function Quiz() {
         ) : (
           <div className="animate-fadeIn">
             <div className="text-center py-6">
-              <div className="text-7xl mb-4">{score >= 70 ? '🎉' : score >= 40 ? '💪' : '📖'}</div>
+              <div className="text-7xl mb-4">{score >= passingScore ? '🎉' : score >= 40 ? '💪' : '📖'}</div>
               <p className="text-3xl font-extrabold heading text-brand-700">{feedback}</p>
               <div className="mt-6 inline-flex flex-col items-center">
                 <div className="relative w-32 h-32">
                   <svg className="w-32 h-32 -rotate-90" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" strokeWidth="8" />
-                    <circle cx="50" cy="50" r="45" fill="none" stroke={score >= 70 ? '#10b981' : '#ef4444'} strokeWidth="8" strokeDasharray="283" strokeDashoffset={283 - (283 * score) / 100} strokeLinecap="round" />
+                    <circle cx="50" cy="50" r="45" fill="none" stroke={score >= passingScore ? '#10b981' : '#ef4444'} strokeWidth="8" strokeDasharray="283" strokeDashoffset={283 - (283 * score) / 100} strokeLinecap="round" />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`text-3xl font-extrabold ${score >= 70 ? 'text-green-600' : 'text-red-500'}`}>{score}%</span>
+                    <span className={`text-3xl font-extrabold ${score >= passingScore ? 'text-green-600' : 'text-red-500'}`}>{score}%</span>
                   </div>
                 </div>
               </div>
@@ -326,7 +330,7 @@ export default function Quiz() {
               <div className="mt-4 flex flex-wrap gap-2 justify-center">
                 {score === 100 && <span className="inline-flex items-center gap-1 text-sm font-bold bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-full border border-yellow-200 animate-bounce-in">🏆 Perfect Score!</span>}
                 {maxStreak >= 5 && <span className="inline-flex items-center gap-1 text-sm font-bold bg-orange-100 text-orange-700 px-3 py-1.5 rounded-full border border-orange-200 animate-bounce-in">🔥 Streak Master!</span>}
-                {score >= 70 && <span className="inline-flex items-center gap-1 text-sm font-bold bg-green-100 text-green-700 px-3 py-1.5 rounded-full border border-green-200 animate-bounce-in">✅ Quiz Passed!</span>}
+                {score >= passingScore && <span className="inline-flex items-center gap-1 text-sm font-bold bg-green-100 text-green-700 px-3 py-1.5 rounded-full border border-green-200 animate-bounce-in">✅ Quiz Passed!</span>}
                 {points >= 400 && <span className="inline-flex items-center gap-1 text-sm font-bold bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full border border-purple-200 animate-bounce-in">⭐ High Scorer!</span>}
               </div>
               <div className="mt-6 flex flex-wrap gap-3 justify-center">

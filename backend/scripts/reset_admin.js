@@ -8,14 +8,23 @@ async function run() {
     const email = 'admin@compubasics.local'
     const password = 'Admin123!' // Compliant with: 8+ chars, Upper, Lower, Number
     const hash = await bcrypt.hash(password, 10)
-    
-    console.log(`Resetting admin user (ID: 1) to email: ${email}...`)
-    
-    await pool.query(
-      'UPDATE users SET email=?, password_hash=?, role=? WHERE id=?',
-      [email, hash, 'admin', 1]
-    )
-    
+
+    const [existing] = await pool.query('SELECT id FROM users WHERE email=? LIMIT 1', [email])
+    if (existing.length) {
+      const adminId = existing[0].id
+      console.log(`Resetting admin user (ID: ${adminId}) to email: ${email}...`)
+      await pool.query(
+        'UPDATE users SET password_hash=?, role=? WHERE id=?',
+        [hash, 'admin', adminId]
+      )
+    } else {
+      console.log(`Creating admin user with email: ${email}...`)
+      await pool.query(
+        'INSERT INTO users (full_name, guardian_name, age, grade_level, email, password_hash, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        ['System Admin', 'System', null, null, email, hash, 'admin']
+      )
+    }
+
     console.log('Admin credentials updated successfully! ✓')
     console.log('User: admin@compubasics.local')
     console.log('Pass: Admin123!')

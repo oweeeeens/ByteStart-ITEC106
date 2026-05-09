@@ -15,8 +15,22 @@ router.get('/:lessonId', requireAuth, async (req, res) => {
       id: q.id,
       question_text: q.question_text,
       image_path: q.image_path,
-      options: [q.option_a, q.option_b, q.option_c, q.option_d],
-      correct_index: ['A', 'B', 'C', 'D'].indexOf(q.correct_answer),
+      ...(() => {
+        const rawOptions = [q.option_a, q.option_b, q.option_c, q.option_d]
+        const correctIndex = ['A', 'B', 'C', 'D'].indexOf(q.correct_answer)
+        const options = []
+        let mappedCorrect = correctIndex
+        rawOptions.forEach((opt, idx) => {
+          const cleaned = String(opt || '').trim()
+          if (cleaned) {
+            options.push(cleaned)
+          } else if (idx < correctIndex) {
+            mappedCorrect -= 1
+          }
+        })
+        if (mappedCorrect < 0 || mappedCorrect >= options.length) mappedCorrect = 0
+        return { options, correct_index: mappedCorrect }
+      })(),
       paragraph_after: q.paragraph_after || 0,
     }))
     res.json({ questions, passing_score: quiz.passing_score || 70 })

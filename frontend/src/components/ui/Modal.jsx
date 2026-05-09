@@ -5,6 +5,7 @@ export default function Modal({ open, title, children, onClose, onConfirm, confi
   const triggerRef = useRef(null)
   const titleId = useId()
   const descId = useId()
+  const isAdmin = typeof document !== 'undefined' && document.querySelector('.admin-wrapper')
 
   // Capture the element that opened the modal so we can return focus
   useEffect(() => {
@@ -64,25 +65,24 @@ export default function Modal({ open, title, children, onClose, onConfirm, confi
         className={`relative w-full max-w-md p-8 outline-none transition-all duration-300 ${
           confirmText === 'Delete' ? 'border-red-500/20' : ''
         } ${
-          title.includes('Edit') || title.includes('Add') || title.includes('New') ? 'border-cyan-500/20' : ''
+          title.includes('Edit') || title.includes('Add') || title.includes('New') ? 'border-brand-200' : ''
         } ${
-          // If in admin deep space or glass mode requested
-          document.querySelector('.admin-deep-space') 
-            ? 'admin-glass-card border-white/10 text-white' 
+          isAdmin
+            ? 'admin-glass-card border border-brand-100 text-ink'
             : 'bg-white rounded-2xl shadow-xl border border-gray-100'
         }`}
       >
         <h2 id={titleId} className={`text-2xl font-extrabold tracking-tight ${
-          document.querySelector('.admin-deep-space') ? 'text-white' : 'text-brand-700'
+          isAdmin ? 'text-ink' : 'text-brand-700'
         }`}>{title}</h2>
         <div id={descId} className={`mt-4 ${
-          document.querySelector('.admin-deep-space') ? 'text-slate-300' : 'text-slate-600'
+          isAdmin ? 'text-steel' : 'text-slate-600'
         }`}>{children}</div>
         <div className="mt-8 flex justify-end gap-3">
           <button 
             className={`px-5 py-2.5 rounded-xl font-bold transition-all ${
-              document.querySelector('.admin-deep-space') 
-                ? 'bg-white/5 hover:bg-white/10 text-slate-300' 
+              isAdmin 
+                ? 'bg-gray-100 hover:bg-gray-200 text-steel' 
                 : 'bg-gray-100 hover:bg-gray-200 text-slate-700'
             }`} 
             onClick={onClose}
@@ -93,7 +93,7 @@ export default function Modal({ open, title, children, onClose, onConfirm, confi
             className={`px-6 py-2.5 rounded-xl font-bold text-white transition-all shadow-lg ${
               confirmText === 'Delete' 
                 ? 'bg-red-500 hover:bg-red-600 shadow-red-500/20' 
-                : 'bg-gradient-to-r from-cyan-500 to-blue-600 shadow-cyan-500/20 hover:scale-105'
+                : 'bg-gradient-to-r from-brand-500 to-brand-600 shadow-brand-500/20 hover:scale-105'
             }`} 
             onClick={onConfirm}
           >
