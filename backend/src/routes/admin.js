@@ -179,6 +179,12 @@ router.delete('/lessons/:id', async (req, res) => {
 router.get('/lessons/:lessonId/questions', async (req, res) => {
   try {
     const pool = await req.poolPromise
+    
+    // Add cache-busting headers
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    res.set('Pragma', 'no-cache')
+    res.set('Expires', '0')
+    
     const [quizzes] = await pool.query('SELECT * FROM quizzes WHERE lesson_id=?', [
       req.params.lessonId,
     ])
@@ -191,6 +197,8 @@ router.get('/lessons/:lessonId/questions', async (req, res) => {
       options: [q.option_a, q.option_b, q.option_c, q.option_d],
       correct_answer: ['A', 'B', 'C', 'D'].indexOf(q.correct_answer),
       image_path: q.image_path || null,
+      explanation: q.explanation || null,
+      paragraph_after: q.paragraph_after || 0,
     }))
     res.json({ questions, passing_score: quiz.passing_score || 70 })
   } catch {
@@ -200,7 +208,7 @@ router.get('/lessons/:lessonId/questions', async (req, res) => {
 
 router.post('/lessons/:lessonId/questions', async (req, res) => {
   try {
-    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path } = req.body
+    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path, explanation } = req.body
     const text = String(question_text || '').trim()
     const optionA = String(option_a || '').trim()
     const optionB = String(option_b || '').trim()
@@ -212,13 +220,17 @@ router.post('/lessons/:lessonId/questions', async (req, res) => {
       return res.status(400).json({ error: 'Missing required question fields' })
     }
     const pool = await req.poolPromise
-    const [quizzes] = await pool.query('SELECT id FROM quizzes WHERE lesson_id=?', [
+    let [quizzes] = await pool.query('SELECT id FROM quizzes WHERE lesson_id=?', [
       req.params.lessonId,
     ])
-    if (!quizzes.length) return res.status(400).json({ error: 'Quiz not found for this lesson' })
+    // Auto-create quiz if it doesn't exist
+    if (!quizzes.length) {
+      const [result] = await pool.query('INSERT INTO quizzes (lesson_id) VALUES (?)', [req.params.lessonId])
+      quizzes = [{ id: result.insertId }]
+    }
     const [r] = await pool.query(
-      'INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_answer, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [quizzes[0].id, text, optionA, optionB, optionC, optionD, correct_answer, image_path || null]
+      'INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_answer, image_path, explanation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [quizzes[0].id, text, optionA, optionB, optionC, optionD, correct_answer, image_path || null, explanation || null]
     )
     res.json({ ok: true, id: r.insertId })
   } catch {
@@ -228,7 +240,7 @@ router.post('/lessons/:lessonId/questions', async (req, res) => {
 
 router.put('/questions/:id', async (req, res) => {
   try {
-    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path } = req.body
+    const { question_text, option_a, option_b, option_c, option_d, correct_answer, image_path, explanation } = req.body
     const text = String(question_text || '').trim()
     const optionA = String(option_a || '').trim()
     const optionB = String(option_b || '').trim()
@@ -241,8 +253,8 @@ router.put('/questions/:id', async (req, res) => {
     }
     const pool = await req.poolPromise
     await pool.query(
-      'UPDATE questions SET question_text=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_answer=?, image_path=? WHERE id=?',
-      [text, optionA, optionB, optionC, optionD, correct_answer, image_path || null, req.params.id]
+      'UPDATE questions SET question_text=?, option_a=?, option_b=?, option_c=?, option_d=?, correct_answer=?, image_path=?, explanation=? WHERE id=?',
+      [text, optionA, optionB, optionC, optionD, correct_answer, image_path || null, explanation || null, req.params.id]
     )
     res.json({ ok: true })
   } catch {

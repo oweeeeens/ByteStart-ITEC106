@@ -92,9 +92,8 @@ export default function LessonDetail() {
   const [hasQueuedRedirect, setHasQueuedRedirect] = useState(false)
 
   const dbLessonId = useMemo(() => {
-    const num = parseInt(lessonId.replace('lesson', ''), 10)
-    return isNaN(num) ? null : num + 1
-  }, [lessonId])
+    return lesson?.db_id || null
+  }, [lesson])
 
   useEffect(() => {
     setRevealedSections({})

@@ -43,7 +43,7 @@ export default function QuizQuestion({ item, onAnswer, selected, answered, isCor
               onClick={() => !answered && onAnswer(idx)}
               role="radio"
               aria-checked={selected === idx || isKeyboardHighlighted}
-              aria-label={`Option ${idx + 1}: ${opt}${isKeyboardHighlighted ? ' (highlighted, press Enter to confirm)' : ''}`}
+              aria-label={`Option ${String.fromCharCode(65 + idx)}: ${opt}${isKeyboardHighlighted ? ' (highlighted, press Enter to confirm)' : ''}`}
               disabled={answered}
               className={`px-5 py-4 rounded-xl text-left border-2 transition-all duration-200 font-medium focus:outline-none focus:ring-4 focus:ring-brand-200 ${btnClass}`}
             >
@@ -59,7 +59,7 @@ export default function QuizQuestion({ item, onAnswer, selected, answered, isCor
                     ? 'bg-brand-500 text-white'
                     : 'bg-brand-100 text-brand-600'
                 }`}>
-                  {answered && idx === item.answer ? '✓' : answered && idx === selected && !isCorrect ? '✗' : idx + 1}
+                  {answered && idx === item.answer ? '✓' : answered && idx === selected && !isCorrect ? '✗' : String.fromCharCode(65 + idx)}
                 </span>
                 {opt}
               </span>

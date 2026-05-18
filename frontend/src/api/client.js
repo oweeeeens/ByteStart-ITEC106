@@ -14,9 +14,23 @@ async function request(path, opts = {}) {
   const token = getToken()
   if (token) headers['Authorization'] = `Bearer ${token}`
   if (opts.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json'
+  
+  // Add cache-control headers for all requests
+  headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+  headers['Pragma'] = 'no-cache'
+  headers['Expires'] = '0'
+  
+  // Add global timestamp for cache-busting on all GET requests
+  let finalPath = path
+  if (opts.method !== 'POST' && opts.method !== 'PUT' && opts.method !== 'DELETE') {
+    const separator = path.includes('?') ? '&' : '?'
+    const timestamp = new Date().getTime()
+    finalPath = `${path}${separator}_t=${timestamp}`
+  }
+  
   let res
   try {
-    res = await fetch(`${BASE}${path}`, { ...opts, headers })
+    res = await fetch(`${BASE}${finalPath}`, { ...opts, headers, cache: 'no-store' })
   } catch (e) {
     const err = new Error('Network error: cannot reach server')
     err.code = 'NETWORK'
@@ -86,32 +100,40 @@ export const api = {
     deleteLesson: (id) =>
       request(`/admin/lessons/${id}`, { method: 'DELETE' }),
     getQuestions: (lessonId) => request(`/admin/lessons/${lessonId}/questions`),
-    addQuestion: (lessonId, { question_text, options, correct_answer, image_path }) =>
-      request(`/admin/lessons/${lessonId}/questions`, {
+    addQuestion: (lessonId, { question_text, options, correct_answer, image_path, explanation }) => {
+      const payload = {
+        question_text,
+        option_a: options[0],
+        option_b: options[1],
+        option_c: options[2],
+        option_d: options[3],
+        correct_answer: ['A', 'B', 'C', 'D'][correct_answer],
+        image_path,
+        explanation,
+      }
+      console.log(`[API] Adding question - correct_answer index: ${correct_answer} -> letter: ${payload.correct_answer}`, payload)
+      return request(`/admin/lessons/${lessonId}/questions`, {
         method: 'POST',
-        body: JSON.stringify({
-          question_text,
-          option_a: options[0],
-          option_b: options[1],
-          option_c: options[2],
-          option_d: options[3],
-          correct_answer: ['A', 'B', 'C', 'D'][correct_answer],
-          image_path,
-        }),
-      }),
-    updateQuestion: (questionId, { question_text, options, correct_answer, image_path }) =>
-      request(`/admin/questions/${questionId}`, {
+        body: JSON.stringify(payload),
+      })
+    },
+    updateQuestion: (questionId, { question_text, options, correct_answer, image_path, explanation }) => {
+      const payload = {
+        question_text,
+        option_a: options[0],
+        option_b: options[1],
+        option_c: options[2],
+        option_d: options[3],
+        correct_answer: ['A', 'B', 'C', 'D'][correct_answer],
+        image_path,
+        explanation,
+      }
+      console.log(`[API] Updating question ${questionId} - correct_answer index: ${correct_answer} -> letter: ${payload.correct_answer}`, payload)
+      return request(`/admin/questions/${questionId}`, {
         method: 'PUT',
-        body: JSON.stringify({
-          question_text,
-          option_a: options[0],
-          option_b: options[1],
-          option_c: options[2],
-          option_d: options[3],
-          correct_answer: ['A', 'B', 'C', 'D'][correct_answer],
-          image_path,
-        }),
-      }),
+        body: JSON.stringify(payload),
+      })
+    },
     deleteQuestion: (questionId) =>
       request(`/admin/questions/${questionId}`, { method: 'DELETE' }),
     updatePassingScore: (lessonId, passing_score) =>

@@ -1,6 +1,7 @@
 export const lessons = [
   {
     id: 'lesson0',
+    db_id: 2,
     title: 'General Introduction to Computers',
     summary:
       'Learn what computers are, how they help us, and the basic parts every computer has.',
@@ -40,6 +41,7 @@ export const lessons = [
   },
   {
     id: 'lesson1',
+    db_id: 3,
     title: 'Input Devices',
     summary:
       'Input devices help you put information into the computer. They are how you tell the computer what to do.',
@@ -78,6 +80,7 @@ export const lessons = [
   },
   {
     id: 'lesson2',
+    db_id: 4,
     title: 'Output Devices',
     summary:
       'Output devices show you the results from the computer. They help you see or hear what the computer does.',
@@ -116,6 +119,7 @@ export const lessons = [
   },
   {
     id: 'lesson3',
+    db_id: 5,
     title: 'System Unit',
     summary:
       'The system unit is the computer\u2019s main body. Inside are parts like the CPU and memory.',
@@ -155,6 +159,7 @@ export const lessons = [
   },
   {
     id: 'lesson4',
+    db_id: 6,
     title: 'Storage Devices',
     summary:
       'Storage devices hold your files and programs, even when the power is off.',
@@ -194,6 +199,7 @@ export const lessons = [
   },
   {
     id: 'lesson5',
+    db_id: 7,
     title: 'Computer Safety and Care',
     summary:
       'Staying safe around computers protects you and the equipment. Learn safe handling and care.',

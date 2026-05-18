@@ -1,5 +1,19 @@
-export const quizBank = {
-  // ─── Lesson 0: Introduction to Computers ─────────────────────────────
+import mysql from 'mysql2/promise'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+})
+
+const quizBank = {
   lesson0: [
     {
       prompt: 'What is a computer?',
@@ -32,8 +46,6 @@ export const quizBank = {
       explanation: 'The internet is a global network that connects millions of computers so people can share information worldwide.',
     },
   ],
-
-  // ─── Lesson 1: Input Devices ──────────────────────────────────────────
   lesson1: [
     {
       prompt: 'What is an input device?',
@@ -66,8 +78,6 @@ export const quizBank = {
       explanation: 'A scanner takes a picture of paper documents and turns them into digital files on the computer.',
     },
   ],
-
-  // ─── Lesson 2: Output Devices ─────────────────────────────────────────
   lesson2: [
     {
       prompt: 'What is an output device?',
@@ -100,8 +110,6 @@ export const quizBank = {
       explanation: 'Headphones let you listen to sound privately without disturbing others around you.',
     },
   ],
-
-  // ─── Lesson 3: System Unit ────────────────────────────────────────────
   lesson3: [
     {
       prompt: 'What is the CPU often called?',
@@ -134,8 +142,6 @@ export const quizBank = {
       explanation: 'Fans and heat sinks keep the parts cool so they do not overheat when the computer is running.',
     },
   ],
-
-  // ─── Lesson 4: Storage Devices ────────────────────────────────────────
   lesson4: [
     {
       prompt: 'What do storage devices do?',
@@ -168,8 +174,6 @@ export const quizBank = {
       explanation: 'Cloud storage saves files on servers connected to the internet so you can access them from anywhere.',
     },
   ],
-
-  // ─── Lesson 5: Computer Safety & Care ─────────────────────────────────
   lesson5: [
     {
       prompt: 'What should you do before using a computer?',
@@ -203,3 +207,78 @@ export const quizBank = {
     },
   ],
 }
+
+const lessonMap = {
+  lesson0: 2, // General Introduction to Computers
+  lesson1: 3, // Input Devices
+  lesson2: 4, // Output Devices
+  lesson3: 5, // Basic Operations and the Windows Operating System
+  lesson4: 6, // Getting Started with the Internet and Email
+  lesson5: 7, // Computer Safety and Care
+}
+
+async function syncQuizzes() {
+  try {
+    console.log('🔄 Syncing quizzes from quiz.js to database...\n')
+
+    for (const [lessonKey, questions] of Object.entries(quizBank)) {
+      const lessonId = lessonMap[lessonKey]
+      console.log(`📚 Processing ${lessonKey} (Lesson ${lessonId})...`)
+
+      // Get or create quiz for this lesson
+      const conn = await pool.getConnection()
+      try {
+        // Get existing quiz
+        const [quizzes] = await conn.query('SELECT id FROM quizzes WHERE lesson_id = ?', [lessonId])
+        let quizId
+
+        if (quizzes.length === 0) {
+          // Create new quiz
+          const [result] = await conn.query('INSERT INTO quizzes (lesson_id, passing_score) VALUES (?, ?)', [
+            lessonId,
+            70,
+          ])
+          quizId = result.insertId
+          console.log(`   ✨ Created new quiz (ID: ${quizId})`)
+        } else {
+          quizId = quizzes[0].id
+          // Delete existing questions
+          await conn.query('DELETE FROM questions WHERE quiz_id = ?', [quizId])
+          console.log(`   🗑️  Cleared old questions from quiz ${quizId}`)
+        }
+
+        // Add new questions
+        for (let i = 0; i < questions.length; i++) {
+          const q = questions[i]
+          const letters = ['A', 'B', 'C', 'D']
+          const correctLetter = letters[q.answer]
+
+          await conn.query(
+            'INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+              quizId,
+              q.prompt,
+              q.options[0],
+              q.options[1],
+              q.options[2] || '',
+              q.options[3] || '',
+              correctLetter,
+              q.explanation,
+            ]
+          )
+        }
+        console.log(`   ✅ Added ${questions.length} questions\n`)
+      } finally {
+        conn.release()
+      }
+    }
+
+    console.log('✨ Quiz sync complete!')
+    process.exit(0)
+  } catch (error) {
+    console.error('❌ Error syncing quizzes:', error.message)
+    process.exit(1)
+  }
+}
+
+syncQuizzes()

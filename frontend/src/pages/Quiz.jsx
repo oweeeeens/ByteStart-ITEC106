@@ -44,6 +44,7 @@ export default function Quiz() {
   const { showToast } = useToast()
   const [questions, setQuestions] = useState(quizBank[lessonId] || [])
   const lesson = lessons.find((l) => l.id === lessonId)
+  const dbLessonId = lesson?.db_id || lessonId // Use db_id for API calls
   useDocTitle(lesson ? `Quiz: ${lesson.title}` : 'Quiz')
   const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState([])
@@ -71,7 +72,8 @@ export default function Quiz() {
     ;(async () => {
       try {
         setLoading(true)
-        const res = await api.quiz(lessonId)
+        console.log(`[Quiz] Fetching questions for dbLessonId=${dbLessonId}`)
+        const res = await api.quiz(dbLessonId)
         if (res.questions?.length) {
           const mapped = res.questions.map((q) => ({
             prompt: q.question_text,
@@ -82,16 +84,21 @@ export default function Quiz() {
             explanation: q.explanation || '',
           }))
           setQuestions(mapped)
+        } else {
+          // Fallback to local quiz bank only if API returns no questions
+          setQuestions(quizBank[lessonId] || [])
         }
         const scoreValue = Number(res.passing_score)
         if (Number.isFinite(scoreValue)) setPassingScore(scoreValue)
-      } catch {
-        // Fallback to local quiz bank
+      } catch (err) {
+        console.error('Quiz API error:', err)
+        // Only fallback to local quiz bank on error
+        setQuestions(quizBank[lessonId] || [])
       } finally {
         setLoading(false)
       }
     })()
-  }, [lessonId])
+  }, [lessonId, dbLessonId])
 
   const score = useMemo(() => {
     let correct = 0
@@ -152,7 +159,7 @@ export default function Quiz() {
         showToast(`🎉 You passed with ${score}%! The next lesson is now unlocked.`, 'success')
         markLessonCompleted(lessonId)
         try {
-          await api.submitQuiz(lessonId, answers)
+          await api.submitQuiz(dbLessonId, answers)
         } catch {
           // Local progress is already saved above
         }
@@ -160,7 +167,7 @@ export default function Quiz() {
         showToast(`You scored ${score}%. You need at least ${passingScore}% to pass. Try again!`, 'error')
       }
     }
-  }, [answered, current, questions, score, lessonId, answers, showToast, recordQuizAttempt, markLessonCompleted, passingScore])
+  }, [answered, current, questions, score, lessonId, dbLessonId, answers, showToast, recordQuizAttempt, markLessonCompleted, passingScore])
 
   const onAnswerRef = useRef(onAnswer)
   const onNextRef = useRef(onNext)

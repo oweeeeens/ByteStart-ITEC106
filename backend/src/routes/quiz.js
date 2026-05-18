@@ -7,32 +7,49 @@ router.get('/:lessonId', requireAuth, async (req, res) => {
   try {
     const { lessonId } = req.params
     const pool = await req.poolPromise
+    
+    // Add cache-busting headers
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate')
+    res.set('Pragma', 'no-cache')
+    res.set('Expires', '0')
+    
     const [quizzes] = await pool.query('SELECT * FROM quizzes WHERE lesson_id=?', [lessonId])
     if (!quizzes.length) return res.json({ questions: [], passing_score: 70 })
     const quiz = quizzes[0]
     const [qs] = await pool.query('SELECT * FROM questions WHERE quiz_id=?', [quiz.id])
-    const questions = qs.map((q) => ({
-      id: q.id,
-      question_text: q.question_text,
-      image_path: q.image_path,
-      ...(() => {
-        const rawOptions = [q.option_a, q.option_b, q.option_c, q.option_d]
-        const correctIndex = ['A', 'B', 'C', 'D'].indexOf(q.correct_answer)
-        const options = []
-        let mappedCorrect = correctIndex
-        rawOptions.forEach((opt, idx) => {
-          const cleaned = String(opt || '').trim()
-          if (cleaned) {
-            options.push(cleaned)
-          } else if (idx < correctIndex) {
-            mappedCorrect -= 1
-          }
-        })
-        if (mappedCorrect < 0 || mappedCorrect >= options.length) mappedCorrect = 0
-        return { options, correct_index: mappedCorrect }
-      })(),
-      paragraph_after: q.paragraph_after || 0,
-    }))
+    const questions = qs.map((q) => {
+      // Convert correct_answer letter to index (A=0, B=1, C=2, D=3)
+      const correctIndex = ['A', 'B', 'C', 'D'].indexOf(q.correct_answer)
+      
+      // Collect non-empty options and map correct answer to the filtered list
+      const rawOptions = [q.option_a, q.option_b, q.option_c, q.option_d]
+      const options = []
+      let mappedCorrect = correctIndex
+      
+      rawOptions.forEach((opt, idx) => {
+        const cleaned = String(opt || '').trim()
+        if (cleaned) {
+          options.push(cleaned)
+        } else if (idx < correctIndex) {
+          mappedCorrect -= 1
+        }
+      })
+      
+      // Safety check: ensure mappedCorrect is valid
+      if (mappedCorrect < 0 || mappedCorrect >= options.length) {
+        mappedCorrect = 0
+      }
+      
+      return {
+        id: q.id,
+        question_text: q.question_text,
+        image_path: q.image_path,
+        options,
+        correct_index: mappedCorrect,
+        explanation: q.explanation || '',
+        paragraph_after: q.paragraph_after || 0,
+      }
+    })
     res.json({ questions, passing_score: quiz.passing_score || 70 })
   } catch {
     res.status(500).json({ error: 'Server error' })
