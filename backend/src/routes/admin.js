@@ -23,7 +23,17 @@ router.get('/users', async (req, res) => {
   try {
     const pool = await req.poolPromise
     const [users] = await pool.query(
-      'SELECT id, full_name, guardian_name, age, grade_level, email, role FROM users'
+      `SELECT
+        id,
+        full_name,
+        guardian_name,
+        age,
+        grade_level,
+        email,
+        role,
+        locked_until,
+        CASE WHEN locked_until IS NOT NULL AND locked_until > NOW() THEN 1 ELSE 0 END AS is_blocked
+       FROM users`
     )
     res.json({ users })
   } catch {
@@ -53,12 +63,32 @@ router.put('/users/:id', async (req, res) => {
 })
 
 router.delete('/users/:id', async (req, res) => {
+  res.status(405).json({ error: 'User deletion is disabled. Block the account instead.' })
+})
+
+router.put('/users/:id/block', async (req, res) => {
   try {
     if (String(req.params.id) === String(req.user.id)) {
-      return res.status(400).json({ error: 'You cannot delete yourself' })
+      return res.status(400).json({ error: 'You cannot block yourself' })
     }
     const pool = await req.poolPromise
-    await pool.query('DELETE FROM users WHERE id=?', [req.params.id])
+    await pool.query(
+      'UPDATE users SET locked_until=?, failed_login_attempts=0 WHERE id=?',
+      ['2099-12-31 23:59:59', req.params.id]
+    )
+    res.json({ ok: true })
+  } catch {
+    res.status(500).json({ error: 'Server error' })
+  }
+})
+
+router.put('/users/:id/unblock', async (req, res) => {
+  try {
+    const pool = await req.poolPromise
+    await pool.query(
+      'UPDATE users SET locked_until=NULL, failed_login_attempts=0 WHERE id=?',
+      [req.params.id]
+    )
     res.json({ ok: true })
   } catch {
     res.status(500).json({ error: 'Server error' })

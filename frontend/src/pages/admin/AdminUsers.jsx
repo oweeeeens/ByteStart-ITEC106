@@ -10,7 +10,7 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [editUser, setEditUser] = useState(null)
-  const [deleteId, setDeleteId] = useState(null)
+  const [blockTarget, setBlockTarget] = useState(null)
   const [form, setForm] = useState({})
   const [query, setQuery] = useState('')
   const [roleFilter, setRoleFilter] = useState('all')
@@ -58,11 +58,17 @@ export default function AdminUsers() {
     } catch (e) { showToast(e.message, 'error') }
   }
 
-  async function confirmDelete() {
+  async function confirmAccessChange() {
     try {
-      await api.admin.deleteUser(deleteId)
-      showToast('User deleted ✓', 'success')
-      setDeleteId(null)
+      if (!blockTarget) return
+      if (blockTarget.isBlocked) {
+        await api.admin.unblockUser(blockTarget.id)
+        showToast('User unblocked', 'success')
+      } else {
+        await api.admin.blockUser(blockTarget.id)
+        showToast('User blocked', 'success')
+      }
+      setBlockTarget(null)
       load()
     } catch (e) { showToast(e.message, 'error') }
   }
@@ -128,6 +134,7 @@ export default function AdminUsers() {
             <tbody>
               {filteredUsers.map((u) => {
                 const isSelf = String(u.id) === String(me?.id)
+                const isBlocked = Boolean(Number(u.is_blocked))
                 return (
                 <tr key={u.id} className="admin-table-row group">
                   <td className="px-6 py-4">
@@ -149,6 +156,11 @@ export default function AdminUsers() {
                     }`}>
                       {u.role}
                     </span>
+                    {isBlocked && (
+                      <span className="ml-2 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-100">
+                        Blocked
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-0.5">
@@ -167,13 +179,19 @@ export default function AdminUsers() {
                         ✏️
                       </button>
                       <button
-                        onClick={() => { if (isSelf) { showToast('You cannot delete yourself', 'error'); return; } setDeleteId(u.id) }}
-                        className={`p-2.5 bg-white rounded-xl text-steel transition-all border border-gray-200 ${isSelf ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-50 hover:text-red-600'}`}
-                        title="Delete User"
-                        aria-label={`Delete ${u.full_name}`}
+                        onClick={() => {
+                          if (isSelf) {
+                            showToast('You cannot block yourself', 'error')
+                            return
+                          }
+                          setBlockTarget({ id: u.id, name: u.full_name, isBlocked })
+                        }}
+                        className={`px-3 py-2.5 bg-white rounded-xl text-xs font-bold text-steel transition-all border border-gray-200 ${isSelf ? 'opacity-50 cursor-not-allowed' : isBlocked ? 'hover:bg-green-50 hover:text-green-600' : 'hover:bg-red-50 hover:text-red-600'}`}
+                        title={isBlocked ? 'Unblock User' : 'Block User'}
+                        aria-label={`${isBlocked ? 'Unblock' : 'Block'} ${u.full_name}`}
                         disabled={isSelf}
                       >
-                        🗑️
+                        {isBlocked ? 'Unblock' : 'Block'}
                       </button>
                     </div>
                   </td>
@@ -257,9 +275,17 @@ export default function AdminUsers() {
         </div>
       </Modal>
 
-      {/* Delete Confirmation */}
-      <Modal open={!!deleteId} title="Delete Account" onClose={() => setDeleteId(null)} onConfirm={confirmDelete} confirmText="Delete" cancelText="Cancel">
-        Are you sure you want to permanently remove this user account? This action cannot be reverted.
+      <Modal
+        open={!!blockTarget}
+        title={blockTarget?.isBlocked ? 'Unblock Account' : 'Block Account'}
+        onClose={() => setBlockTarget(null)}
+        onConfirm={confirmAccessChange}
+        confirmText={blockTarget?.isBlocked ? 'Unblock' : 'Block'}
+        cancelText="Cancel"
+      >
+        {blockTarget?.isBlocked
+          ? `Allow ${blockTarget?.name || 'this user'} to log in again?`
+          : `Block ${blockTarget?.name || 'this user'} from logging in? Their account, progress, and history will stay saved.`}
       </Modal>
     </div>
   )

@@ -55,10 +55,6 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-wrapper">
-      {/* Decorative Glows (Hidden in High Contrast via CSS) */}
-      <div className="admin-glow admin-glow-1" />
-      <div className="admin-glow admin-glow-2" />
-
       {/* Sidebar Desktop */}
       <aside className="admin-sidebar hidden md:flex">
         {/* Branding */}
@@ -76,10 +72,14 @@ export default function AdminLayout() {
         </div>
         
         {/* Navigation */}
-        <nav className="admin-nav-menu">
+        <nav className="admin-nav-menu" aria-label="Admin sections">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} end={l.end} className="admin-nav-item">
-              <div className="admin-nav-indicator" />
+            <NavLink
+              key={l.to}
+              to={l.to}
+              end={l.end}
+              className={({ isActive }) => `admin-nav-item${isActive ? ' active' : ''}`}
+            >
               <span className="admin-nav-icon-container">{l.icon}</span>
               <span className="admin-nav-label">{l.label}</span>
             </NavLink>
@@ -110,7 +110,12 @@ export default function AdminLayout() {
       {/* Mobile nav */}
       <div className="admin-mobile-nav md:hidden">
         {links.map((l) => (
-          <NavLink key={l.to} to={l.to} end={l.end} className="admin-mobile-item">
+          <NavLink
+            key={l.to}
+            to={l.to}
+            end={l.end}
+            className={({ isActive }) => `admin-mobile-item${isActive ? ' active' : ''}`}
+          >
             <span className="admin-mobile-icon">{l.icon}</span>
             <span className="admin-mobile-label">{l.label}</span>
           </NavLink>

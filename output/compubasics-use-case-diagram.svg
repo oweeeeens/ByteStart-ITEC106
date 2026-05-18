@@ -1,0 +1,88 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1650" viewBox="0 0 1800 1650">
+  <rect width="100%" height="100%" fill="#ffffff" />
+  <text x="60" y="40" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800" fill="#111827">15. Use Case Diagram</text>
+
+  <rect x="450" y="80" width="900" height="1460" fill="#b9dbe7" stroke="#93c5d4" stroke-width="2" />
+  <text x="900" y="110" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#111827">CompuBasics</text>
+
+  
+    <circle cx="170" cy="760" r="18" stroke="#111827" stroke-width="3" fill="white" />
+    <line x1="170" y1="778" x2="170" y2="838" stroke="#111827" stroke-width="3" />
+    <line x1="140" y1="802" x2="200" y2="802" stroke="#111827" stroke-width="3" />
+    <line x1="170" y1="838" x2="146" y2="878" stroke="#111827" stroke-width="3" />
+    <line x1="170" y1="838" x2="194" y2="878" stroke="#111827" stroke-width="3" />
+    <text x="170" y="718" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#111827"><tspan x="170" dy="0">User</tspan><tspan x="170" dy="22">Student</tspan></text>
+  
+  
+    <circle cx="1620" cy="760" r="18" stroke="#111827" stroke-width="3" fill="white" />
+    <line x1="1620" y1="778" x2="1620" y2="838" stroke="#111827" stroke-width="3" />
+    <line x1="1590" y1="802" x2="1650" y2="802" stroke="#111827" stroke-width="3" />
+    <line x1="1620" y1="838" x2="1596" y2="878" stroke="#111827" stroke-width="3" />
+    <line x1="1620" y1="838" x2="1644" y2="878" stroke="#111827" stroke-width="3" />
+    <text x="1620" y="718" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#111827"><tspan x="1620" dy="0">Admin</tspan></text>
+  
+
+  
+    <ellipse cx="820" cy="170" rx="120" ry="36" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="166" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Register</tspan><tspan x="820" dy="21">Account</tspan></text>
+  
+    <ellipse cx="820" cy="270" rx="120" ry="36" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="266" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Login Account</tspan></text>
+  
+    <ellipse cx="820" cy="370" rx="110" ry="34" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="366" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">View Profile</tspan></text>
+  
+    <ellipse cx="820" cy="470" rx="110" ry="34" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="466" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">View Lessons</tspan></text>
+  
+    <ellipse cx="820" cy="570" rx="120" ry="36" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="566" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">View Lesson</tspan><tspan x="820" dy="21">Content</tspan></text>
+  
+    <ellipse cx="820" cy="670" rx="100" ry="32" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="666" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Take Quiz</tspan></text>
+  
+    <ellipse cx="820" cy="770" rx="110" ry="36" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="766" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">View Quiz</tspan><tspan x="820" dy="21">Result</tspan></text>
+  
+    <ellipse cx="820" cy="870" rx="130" ry="36" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="866" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">View Learning</tspan><tspan x="820" dy="21">Progress</tspan></text>
+  
+    <ellipse cx="820" cy="970" rx="145" ry="40" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="966" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Adjust Accessibility</tspan><tspan x="820" dy="21">Settings</tspan></text>
+  
+    <ellipse cx="820" cy="1070" rx="90" ry="32" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="1066" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Logout</tspan></text>
+  
+    <ellipse cx="820" cy="1170" rx="120" ry="36" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="1166" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Access Help</tspan><tspan x="820" dy="21">and Support</tspan></text>
+  
+    <ellipse cx="820" cy="1270" rx="130" ry="40" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="1266" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Add / Edit /</tspan><tspan x="820" dy="21">Delete Lessons</tspan></text>
+  
+    <ellipse cx="820" cy="1370" rx="120" ry="38" fill="#ffffff" stroke="#9ca3af" stroke-width="2" />
+    <text x="820" y="1366" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="820" dy="0">Add Quiz</tspan><tspan x="820" dy="21">Questions</tspan></text>
+  
+  
+    <ellipse cx="1125" cy="170" rx="120" ry="30" fill="#eff6ff" stroke="#60a5fa" stroke-width="2" />
+    <text x="1125" y="166" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Check Username</tspan></text>
+  
+    <ellipse cx="1125" cy="225" rx="122" ry="30" fill="#eff6ff" stroke="#60a5fa" stroke-width="2" />
+    <text x="1125" y="221" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Validate Password</tspan></text>
+  
+    <ellipse cx="1125" cy="315" rx="120" ry="30" fill="#fffbeb" stroke="#f59e0b" stroke-width="2" />
+    <text x="1125" y="311" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Forgot Password</tspan></text>
+  
+    <ellipse cx="1125" cy="670" rx="100" ry="30" fill="#eff6ff" stroke="#60a5fa" stroke-width="2" />
+    <text x="1125" y="666" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Submit Quiz</tspan></text>
+  
+    <ellipse cx="1125" cy="825" rx="118" ry="34" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+    <text x="1125" y="821" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Unlocks Next</tspan><tspan x="1125" dy="21">Lesson</tspan></text>
+  
+    <ellipse cx="1125" cy="770" rx="110" ry="30" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+    <text x="1125" y="766" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Review Answers</tspan></text>
+  
+    <ellipse cx="1125" cy="1460" rx="125" ry="38" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" />
+    <text x="1125" y="1456" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" fill="#111827"><tspan x="1125" dy="0">Monitors Student</tspan><tspan x="1125" dy="21">Progress</tspan></text>
+  
+</svg>

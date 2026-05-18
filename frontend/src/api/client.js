@@ -83,8 +83,10 @@ export const api = {
     getUsers: () => request('/admin/users'),
     updateUser: (id, data) =>
       request(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-    deleteUser: (id) =>
-      request(`/admin/users/${id}`, { method: 'DELETE' }),
+    blockUser: (id) =>
+      request(`/admin/users/${id}/block`, { method: 'PUT' }),
+    unblockUser: (id) =>
+      request(`/admin/users/${id}/unblock`, { method: 'PUT' }),
     getCourses: () => request('/admin/courses'),
     createCourse: (data) =>
       request('/admin/courses', { method: 'POST', body: JSON.stringify(data) }),

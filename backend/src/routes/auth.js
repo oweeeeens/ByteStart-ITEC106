@@ -88,6 +88,9 @@ router.post('/login', async (req, res) => {
       const now = new Date()
       const lockedUntil = new Date(user.locked_until)
       if (lockedUntil > now) {
+        if (lockedUntil.getFullYear() >= 2099) {
+          return res.status(423).json({ error: 'Account blocked by admin.' })
+        }
         const retrySeconds = Math.ceil((lockedUntil - now) / 1000)
         res.set('Retry-After', String(retrySeconds))
         return res.status(423).json({ error: 'Account locked. Try again later.', retry_after_seconds: retrySeconds })
