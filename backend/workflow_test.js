@@ -12,7 +12,7 @@ async function run() {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'compubasics'
+    database: process.env.DB_NAME || 'bytestart'
   });
 
   const [rows] = await connection.query('SELECT * FROM users WHERE role=\"admin\" LIMIT 1');

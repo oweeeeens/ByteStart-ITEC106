@@ -27,7 +27,7 @@ export default function Navbar() {
     <nav id="main-nav" className="bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 text-white border-b border-brand-700/30 sticky top-0 z-50 shadow-lg" role="navigation" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-2xl font-extrabold heading text-white flex items-center gap-2 hover:scale-105 transition-transform">
-          <span className="text-3xl">💻</span> CompuBasics
+          <span className="text-3xl">💻</span> ByteStart
         </Link>
         <button
           aria-label={open ? 'Close menu' : 'Open menu'}

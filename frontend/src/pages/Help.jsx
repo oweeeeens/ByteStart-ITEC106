@@ -22,7 +22,7 @@ export default function Help() {
     {
       icon: '📝', title: 'How to Create an Account',
       image: '/images/guides/guide-register.png',
-      alt: 'Screenshot of the CompuBasics registration page showing the form fields',
+      alt: 'Screenshot of the ByteStart registration page showing the form fields',
       steps: [
         'Click "Register" on the navigation bar at the top.',
         'Type your full name, age (10–15), and select Grade 6.',
@@ -86,7 +86,7 @@ export default function Help() {
       <div className="text-center">
         <div className="text-5xl mb-3">❓</div>
         <h1 className="text-3xl font-extrabold heading text-brand-700">Help & FAQ</h1>
-        <p className="mt-2 text-steel">Find answers to common questions and learn how to use CompuBasics</p>
+        <p className="mt-2 text-steel">Find answers to common questions and learn how to use ByteStart</p>
       </div>
 
       <section aria-label="Step-by-step visual guides">
@@ -172,7 +172,7 @@ export default function Help() {
       </section>
 
       <div className="text-center text-sm text-steel bg-brand-50 rounded-xl p-4 border border-brand-100">
-        💡 <strong>Tip:</strong> You can use the ♿ Accessibility page to adjust text size, contrast, and more to make CompuBasics work best for you!
+        💡 <strong>Tip:</strong> You can use the ♥ufef0 Accessibility page to adjust text size, contrast, and more to make ByteStart work best for you!
       </div>
     </div>
   )

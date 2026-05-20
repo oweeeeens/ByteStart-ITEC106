@@ -74,7 +74,7 @@ export default function Accessibility() {
       <div className="text-center">
         <div className="text-5xl mb-3">♿</div>
         <h1 className="text-3xl font-extrabold heading text-brand-700">Accessibility Settings</h1>
-        <p className="mt-2 text-steel text-lg">Make CompuBasics work best for you. All settings are saved automatically.</p>
+        <p className="mt-2 text-steel text-lg">Make ByteStart work best for you. All settings are saved automatically.</p>
       </div>
       <div aria-live="polite" className={`text-center text-green-600 text-sm font-bold h-6 transition-opacity ${savedMsg ? 'opacity-100' : 'opacity-0'}`}>
         {savedMsg && '✅ ' + savedMsg}
@@ -176,7 +176,7 @@ export default function Accessibility() {
           <div className="bg-green-50 rounded-xl p-4 border border-green-100">
             <div className="font-bold text-green-700 mb-2">🔊 Text-to-Speech is ON</div>
             <p className="text-sm text-steel mb-3">A floating toolbar will appear in the bottom-right of every page. Try it:</p>
-            <button onClick={() => speak('Hello! Welcome to CompuBasics. The read aloud toolbar is now active on every page. Click Read Page to hear the whole page, or select some text and click Selection to hear just that part.')} className="btn btn-primary text-sm px-4 py-2">
+            <button onClick={() => speak('Hello! Welcome to ByteStart. The read aloud toolbar is now active on every page. Click Read Page to hear the whole page, or select some text and click Selection to hear just that part.')} className="btn btn-primary text-sm px-4 py-2">
               🔊 Play Sample
             </button>
             <button onClick={() => window.speechSynthesis.cancel()} className="btn btn-secondary text-sm px-4 py-2 ml-2">
@@ -209,7 +209,7 @@ export default function Accessibility() {
       <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-100">
         <h2 className="text-xl font-bold heading text-purple-700 mb-3">💜 About PWD Accessibility</h2>
         <p className="text-steel text-sm leading-relaxed">
-          CompuBasics is designed to be inclusive for Persons with Disabilities (PWDs). We follow
+          ByteStart is designed to be inclusive for Persons with Disabilities (PWDs). We follow
           web accessibility guidelines (WCAG 2.1) to ensure everyone can learn about computers.
           Features include keyboard navigation, screen reader support, dyslexia-friendly fonts,
           adjustable text sizes, high contrast mode, reduced motion, and text-to-speech.

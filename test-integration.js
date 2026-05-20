@@ -1,5 +1,5 @@
 /**
- * Integration Test Script for CompuBasics Function Integration
+ * Integration Test Script for ByteStart Function Integration
  * Tests the 3 critical fixes: breached passwords, guardian name normalization, logout state
  */
 
@@ -153,7 +153,7 @@ async function testLogoutStateManagement() {
 
 async function runAllTests() {
   log('╔═══════════════════════════════════════════════════════╗', YELLOW);
-  log('║  CompuBasics Integration Tests                       ║', YELLOW);
+  log('║  ByteStart Integration Tests                         ║', YELLOW);
   log('║  Testing 3 Critical Fixes                            ║', YELLOW);
   log('╚═══════════════════════════════════════════════════════╝', YELLOW);
 
@@ -179,7 +179,7 @@ async function runAllTests() {
     log(`Failed: ${failCount}`, failCount > 0 ? RED : GREEN);
 
     if (failCount === 0) {
-      log('\n🎉 All integration tests passed! All functions from CompuBasics are properly integrated.', GREEN);
+      log('\n🎉 All integration tests passed! All functions from ByteStart are properly integrated.', GREEN);
       log('✅ Security fixes verified', GREEN);
       log('✅ UX improvements verified', GREEN);
       log('✅ State management verified', GREEN);

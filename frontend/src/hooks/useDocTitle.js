@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 export default function useDocTitle(title) {
   useEffect(() => {
     const prev = document.title
-    document.title = title ? `${title} — CompuBasics` : 'CompuBasics'
+    document.title = title ? `${title} — ByteStart` : 'ByteStart'
     return () => { document.title = prev }
   }, [title])
 }

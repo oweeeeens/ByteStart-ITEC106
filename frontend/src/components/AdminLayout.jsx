@@ -67,7 +67,7 @@ export default function AdminLayout() {
           </div>
           <div>
             <h1 className="admin-brand-title">Admin Console</h1>
-            <p className="admin-brand-subtitle">CompuBasics</p>
+            <p className="admin-brand-subtitle">ByteStart</p>
           </div>
         </div>
         

@@ -13,7 +13,7 @@ const BLOCKED_PASSWORDS = new Set([
   '654321', 'letmein', 'welcome', 'admin', 'passw0rd', 'p@ssword', 'pass123',
   '111111', '000000', 'baseball', 'michael', 'jordan', 'superman', 'hunter',
   'thomas', 'ranger', 'buster', 'soccer', 'harley', 'daniel', 'robert',
-  'computer', 'compubasics', 'grade6', 'student', 'school', 'teacher',
+  'computer', 'bytestart', 'grade6', 'student', 'school', 'teacher',
 ])
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -133,7 +133,7 @@ export default function Register() {
     if (!/[0-9]/.test(form.password)) { setError('Password must include at least one number (0-9).'); return }
     const age = Number(form.age)
     if (!form.age || isNaN(age) || age < 10 || age > 15) {
-      setError('CompuBasics is for students aged 10–15 only. Please enter a valid age.')
+      setError('ByteStart is for students aged 10–15 only. Please enter a valid age.')
       showToast('You must be between 10 and 15 years old to register.', 'warning')
       return
     }
@@ -165,7 +165,7 @@ export default function Register() {
           <div className="text-center mb-6">
             <div className="text-5xl mb-3">📝</div>
             <h1 className="text-3xl font-extrabold heading text-brand-700">Create Account</h1>
-            <p className="mt-2 text-steel">Join CompuBasics and start learning!</p>
+            <p className="mt-2 text-steel">Join ByteStart and start learning!</p>
           </div>
           <form onSubmit={onSubmit} className="space-y-4" aria-busy={loading}>
             <label className="block" htmlFor="reg-fullname">
@@ -235,7 +235,7 @@ export default function Register() {
             </label>
             <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
               <p className="text-sm font-medium text-blue-900">🏫 Grade Level: <strong>6</strong></p>
-              <p className="text-xs text-blue-700 mt-1">CompuBasics is designed for Grade 6 students</p>
+              <p className="text-xs text-blue-700 mt-1">ByteStart is designed for Grade 6 students</p>
             </div>
             <label className="block" htmlFor="reg-email">
               <span className="block mb-1 font-bold text-ink">📧 Email</span>
@@ -346,7 +346,7 @@ export default function Register() {
                 type="button"
                 className="btn btn-secondary w-full"
                 onClick={() => {
-                  const localEmail = form.email.trim() || 'guest@compubasics.local'
+                  const localEmail = form.email.trim() || 'guest@bytestart.local'
                   login({ email: localEmail, role: 'student' })
                   localStorage.setItem('cb_token', 'local')
                   navigate('/')
@@ -360,7 +360,7 @@ export default function Register() {
             </button>
           </form>
           <div className="mt-4 text-xs text-steel bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 text-center">
-            ⚠️ <strong>CompuBasics is for Grade 6 students only</strong> (ages 10–15).
+            ⚠️ <strong>ByteStart is for Grade 6 students only</strong> (ages 10–15).
           </div>
           <div className="mt-4 text-center text-sm text-steel">
             Already have an account?{' '}

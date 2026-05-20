@@ -13,7 +13,7 @@ const BLOCKED_PASSWORDS = new Set([
   '654321', 'letmein', 'welcome', 'admin', 'passw0rd', 'p@ssword', 'pass123',
   '111111', '000000', 'baseball', 'michael', 'jordan', 'superman', 'hunter',
   'thomas', 'ranger', 'buster', 'soccer', 'harley', 'daniel', 'robert',
-  'computer', 'compubasics', 'grade6', 'student', 'school', 'teacher',
+  'computer', 'bytestart', 'grade6', 'student', 'school', 'teacher',
 ])
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

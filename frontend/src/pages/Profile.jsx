@@ -25,7 +25,7 @@ export default function Profile() {
   const achievements = []
   if (completed >= 1) achievements.push({ icon: '🌱', label: 'First Lesson', desc: 'Completed your first lesson' })
   if (completed >= 3) achievements.push({ icon: '🔥', label: 'Halfway There', desc: 'Completed 3 lessons' })
-  if (completed >= total) achievements.push({ icon: '🏆', label: 'CompuBasics Master', desc: 'Completed all lessons!' })
+  if (completed >= total) achievements.push({ icon: '🎆', label: 'ByteStart Master', desc: 'Completed all lessons!' })
   if (totalQuizzes >= 1) achievements.push({ icon: '📝', label: 'Quiz Taker', desc: 'Took your first quiz' })
   if (totalQuizzes >= 5) achievements.push({ icon: '🧠', label: 'Quiz Whiz', desc: 'Took 5 quizzes' })
   if (bestScore === 100) achievements.push({ icon: '💯', label: 'Perfect Score', desc: 'Scored 100% on a quiz' })
@@ -34,7 +34,7 @@ export default function Profile() {
   const lockedAchievements = []
   if (completed < 1) lockedAchievements.push({ icon: '🌱', label: 'First Lesson', desc: 'Complete your first lesson' })
   if (completed < 3) lockedAchievements.push({ icon: '🔥', label: 'Halfway There', desc: 'Complete 3 lessons' })
-  if (completed < total) lockedAchievements.push({ icon: '🏆', label: 'CompuBasics Master', desc: 'Complete all lessons' })
+  if (completed < total) lockedAchievements.push({ icon: '🎆', label: 'ByteStart Master', desc: 'Complete all lessons' })
   if (totalQuizzes < 1) lockedAchievements.push({ icon: '📝', label: 'Quiz Taker', desc: 'Take your first quiz' })
   if (totalQuizzes < 5) lockedAchievements.push({ icon: '🧠', label: 'Quiz Whiz', desc: 'Take 5 quizzes' })
   if (bestScore < 100) lockedAchievements.push({ icon: '💯', label: 'Perfect Score', desc: 'Score 100% on a quiz' })

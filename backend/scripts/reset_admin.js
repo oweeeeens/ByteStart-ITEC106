@@ -5,7 +5,7 @@ import { createPool } from '../src/config/db.js'
 async function run() {
   const pool = await createPool()
   try {
-    const email = 'admin@compubasics.local'
+    const email = 'admin@bytestart.local'
     const password = 'Admin123!' // Compliant with: 8+ chars, Upper, Lower, Number
     const hash = await bcrypt.hash(password, 10)
 
@@ -26,7 +26,7 @@ async function run() {
     }
 
     console.log('Admin credentials updated successfully! ✓')
-    console.log('User: admin@compubasics.local')
+    console.log('User: admin@bytestart.local')
     console.log('Pass: Admin123!')
   } catch (e) {
     console.error('Error resetting credentials:', e)

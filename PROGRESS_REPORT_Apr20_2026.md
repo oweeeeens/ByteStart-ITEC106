@@ -1,10 +1,10 @@
-# CompuBasics Progress Report
+# ByteStart Progress Report
 **Report Date:** April 20, 2026
 
 ---
 
 ## Project Information
-- **Project Title:** CompuBasics
+- **Project Title:** ByteStart
 - **Team Leader:** Havana, Paul Owen
 - **Team Members:** 
   - Dagohoy, Jonnel

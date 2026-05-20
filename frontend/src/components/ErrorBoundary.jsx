@@ -11,7 +11,7 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.error('CompuBasics error:', error, info?.componentStack)
+    console.error('ByteStart error:', error, info?.componentStack)
   }
 
   render() {
@@ -40,7 +40,7 @@ export default class ErrorBoundary extends Component {
               Something went wrong
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.6, margin: '0 0 1.5rem' }}>
-              CompuBasics ran into an unexpected error. Try refreshing the page.
+              ByteStart ran into an unexpected error. Try refreshing the page.
             </p>
             <button
               onClick={() => window.location.reload()}

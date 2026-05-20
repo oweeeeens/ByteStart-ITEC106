@@ -28,7 +28,7 @@ async function runTest() {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      database: 'compubasics'
+      database: 'bytestart'
     });
 
     console.log('--- Step 1: Current question count for lesson 0 ---');

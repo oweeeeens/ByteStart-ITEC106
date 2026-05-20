@@ -34,5 +34,5 @@ app.use('/api/admin', adminRouter)
 
 const port = process.env.PORT || 4000
 app.listen(port, () => {
-  console.log(`CompuBasics API listening on http://localhost:${port}`)
+  console.log(`ByteStart API listening on http://localhost:${port}`)
 })

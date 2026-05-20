@@ -84,7 +84,7 @@ export default function Home() {
 
       {/* ─── About Section ─── */}
       <Card className="p-6">
-        <h2 className="text-2xl font-bold heading text-brand-700">📌 About CompuBasics</h2>
+        <h2 className="text-2xl font-bold heading text-brand-700">📌 About ByteStart</h2>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
             <h3 className="font-bold text-blue-700 text-lg">🖥️ What is it?</h3>
@@ -173,7 +173,7 @@ export default function Home() {
       {/* ─── Accessibility Highlights ─── */}
       <Card className="p-6 bg-gradient-to-br from-purple-50 via-white to-pink-50 border-purple-200">
         <h2 className="text-2xl font-bold heading text-purple-700">♿ Built for Everyone</h2>
-        <p className="text-steel mt-1 mb-4">CompuBasics follows <strong>WCAG 2.1 AA</strong> standards. Every learner can customise their experience.</p>
+        <p className="text-steel mt-1 mb-4">ByteStart follows <strong>WCAG 2.1 AA</strong> standards. Every learner can customise their experience.</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {[
             { icon: '🌙', label: 'Dark Mode' },
@@ -284,11 +284,11 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-steel text-sm">
           <div>
             <h3 className="font-bold text-ink">About</h3>
-            <p className="mt-1">CompuBasics — a WCAG 2.1 AA compliant e-learning platform helping Grade 6 students master computer hardware.</p>
+            <p className="mt-1">ByteStart — a WCAG 2.1 AA compliant e-learning platform helping Grade 6 students master computer hardware.</p>
           </div>
           <div>
             <h3 className="font-bold text-ink">Contact</h3>
-            <p className="mt-1">Email: support@compubasics.example</p>
+            <p className="mt-1">Email: support@bytestart.example</p>
           </div>
           <div>
             <h3 className="font-bold text-ink">Quick Links</h3>
@@ -300,7 +300,7 @@ export default function Home() {
           </div>
           <div className="md:text-right">
             <h3 className="font-bold text-ink">Copyright</h3>
-            <p className="mt-1">© {new Date().getFullYear()} CompuBasics</p>
+            <p className="mt-1">© {new Date().getFullYear()} ByteStart</p>
           </div>
         </div>
       </Card>

@@ -5,7 +5,7 @@ async function run() {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'compubasics'
+    database: 'bytestart'
   });
 
   try {
