@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "cd backend && npm run dev",
-    "start": "cd backend && npm start",
+    "start": "npm run build && cd backend && npm start",
     "build": "cd frontend && npm run build",
     "seed": "cd backend && npm run seed"
   },
